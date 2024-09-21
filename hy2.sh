@@ -6,11 +6,11 @@ clear
 # 颜色定义
 GREEN="\e[32m"
 RED="\e[31m"
-YELLOW="\e[93m"
+YELLOW="\033[38;2;247;241;41m"
 BLUE="\e[34m"
-CYAN="\e[36m"     # 青色
-MAGENTA="\e[35m"  # 洋红色
-ORANGE="\e[38;5;214m"  # 橘色
+CYAN="\033[38;2;32;255;218m"     # 青色
+MAGENTA="\033[38;2;255;32;140m"  # 洋红色
+ORANGE="\033[38;2;247;116;41m"
 RESET="\e[0m"
 
 # 打印欢迎横幅
@@ -84,7 +84,7 @@ show_menu() {
     while true; do
         echo ""
         echo ""
-        echo -e "${BLUE}请选择您需要的功能：${RESET}"
+        echo -e "${ORANGE}请选择您需要的功能：${RESET}"
         echo ""
         echo ""
         echo -e "${GREEN}  1. 安装/更新 Hysteria 2 最新版本${RESET}"
@@ -128,7 +128,7 @@ show_menu() {
             10) print_configuration ;;
             11) common_tools ;;
             0) exit 0 ;;
-            *) echo -e "${RED}无效的选择，请重新输入。${RESET}" ;;
+            *) echo -e "${RED}无效的选择，请重新输入！${RESET}" ;;
         esac
     done
 }
@@ -196,7 +196,7 @@ install_hysteria_specified_version() {
     while true; do
         echo ""
         echo ""
-        read -p "${YELLOW}请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}" version_number
+        read -p "${RESET}请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}" version_number
         # 检查输入是否为合法版本号格式 (例如: 1.0.0)
         if [[ "$version_number" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             break  # 如果格式正确，跳出循环，继续后续流程
@@ -243,12 +243,12 @@ edit_server_config() {
         clear
 
         # 2. 提示信息
-        echo -e "${BLUE}请选择您要搭建 Hysteria 2 的方式：${RESET}"
+        echo -e "${ORANGE}请选择您要搭建 Hysteria 2 的方式：${RESET}"
         echo ""
-        echo -e "${GREEN}   1. ${RESET}自备域名搭建"
-        echo -e "${GREEN}   2. ${RESET}无域名搭建"
+        echo -e "${GREEN}   1. 自备域名搭建${RESET}"
+        echo -e "${GREEN}   2. 无域名搭建${RESET}"
         echo ""
-        echo -e "${YELLOW}   0. ${RESET}返回主菜单"
+        echo -e "${YELLOW}   0. 返回主菜单${RESET}"
         echo ""
         
         # 让用户输入数字进行选择
