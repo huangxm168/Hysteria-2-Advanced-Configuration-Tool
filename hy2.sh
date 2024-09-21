@@ -196,7 +196,7 @@ install_hysteria_specified_version() {
     while true; do
         echo ""
         echo ""
-        read -p "请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}" version_number
+        read -p "$(echo -e "${RESET}请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}")" version_number
         # 检查输入是否为合法版本号格式 (例如: 1.0.0)
         if [[ "$version_number" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             break  # 如果格式正确，跳出循环，继续后续流程
@@ -205,7 +205,7 @@ install_hysteria_specified_version() {
             echo ""
             echo -e "${RED}您输入的版本号格式无效！${RESET}"
             echo ""
-            read -p "$(echo -e "请重新输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}")" version_number
+            read -p "$(echo -e "${RESET}请重新输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}")" version_number
         fi
     done
 
@@ -252,7 +252,7 @@ edit_server_config() {
         echo ""
         
         # 让用户输入数字进行选择
-        read -p "${RESET}请输入您的选择 [1/2/0]：${RESET}" config_choice
+        read -p "$(echo -e "${RESET}请输入您的选择 [1/2/0]：${RESET}")" config_choice
 
         case "$config_choice" in
             1)
@@ -280,7 +280,7 @@ edit_server_config() {
                     generate_random_port  # 每次显示时都生成一个新的随机可用端口
                     echo ""
                     echo ""
-                    read -p "${YELLOW}请输入 Hysteria 2 监听端口（按下回车键来使用推荐的可用随机端口 $random_port_number）: ${RESET}" port_number
+                    read -p "$(echo -e "${YELLOW}请输入 Hysteria 2 监听端口（按下回车键来使用推荐的可用随机端口 $random_port_number）: ${RESET}")" port_number
                     
                     # 如果用户直接回车，使用推荐的端口，并跳过端口检测
                     if [ -z "$port_number" ]; then
@@ -315,7 +315,7 @@ edit_server_config() {
                 while true; do
                     echo ""
                     echo ""
-                    read -p "${YELLOW}请输入已解析到本服务器 IP 的域名: ${RESET}" domain_change
+                    read -p "$(echo -e "${YELLOW}请输入已解析到本服务器 IP 的域名: ${RESET}")" domain_change
                     echo ""
 
                     # 允许多级域名的域名格式检测
@@ -355,7 +355,7 @@ edit_server_config() {
                         echo ""
                         echo -e "${YELLOW}如果继续，服务端配置文件可以照常编辑，但可能影响 Hysteria 2 服务的启动，是否要继续？${RESET}"
                         echo ""
-                        read -p "${RESET}请输入您的选择 [Yy/Nn]：${RESET}" user_choice
+                        read -p "$(echo -e "${RESET}请输入您的选择 [Yy/Nn]：${RESET}")" user_choice
                         # 输入错误的循环提示
                         while true; do
                             case "$user_choice" in
@@ -370,7 +370,7 @@ edit_server_config() {
                                     echo ""
                                     echo -e "${RED}您的输入有误!${RESET}"
                                     echo ""
-                                    read -p "${RESET}请重新输入您的选择 [Yy/Nn]：${RESET}" user_choice
+                                    read -p "$(echo -e "${RESET}请重新输入您的选择 [Yy/Nn]：${RESET}")" user_choice
                                     ;;
                             esac
                         done
@@ -439,7 +439,7 @@ edit_server_config() {
                 while true; do
                     generate_random_port  # 每次显示时都生成一个新的随机可用端口
                     echo ""
-                    read -p "${YELLOW}请输入 Hysteria 2 监听端口（按下回车键来使用推荐的可用随机端口 $random_port_number）: ${RESET}" port_number
+                    read -p "$(echo -e "${YELLOW}请输入 Hysteria 2 监听端口（按下回车键来使用推荐的可用随机端口 $random_port_number）: ${RESET}")" port_number
                     
                     # 如果用户直接回车，使用推荐的端口，并跳过端口检测
                     if [ -z "$port_number" ]; then
@@ -490,7 +490,7 @@ edit_server_config() {
                     echo ""
                     echo -e "${YELLOW}如果继续，服务端配置文件可以照常编辑，但可能影响 Hysteria 2 服务的启动，是否要继续？${RESET}"
                     echo ""
-                    read -p "${RESET}请输入您的选择 [Yy/Nn]：${RESET}" user_choice
+                    read -p "$(echo -e "${RESET}请输入您的选择 [Yy/Nn]：${RESET}")" user_choice
                     # 输入错误的循环提示
                     while true; do
                         case "$user_choice" in
@@ -505,7 +505,7 @@ edit_server_config() {
                                 echo ""
                                 echo -e "${RED}您的输入有误!${RESET}"
                                 echo ""
-                                read -p "${RESET}请重新输入您的选择 [Yy/Nn]：${RESET}" user_choice
+                                read -p "$(echo -e "${RESET}请重新输入您的选择 [Yy/Nn]：${RESET}")" user_choice
                                 ;;
                         esac
                     done
@@ -558,7 +558,7 @@ edit_server_config() {
                 echo ""
                 echo -e "${RED}您的输入有误！${RESET}"
                 echo ""
-                read -p "${RESET}请重新您的输入选择 [1/2/0]：${RESET}" config_choice
+                read -p "$(echo -e "${RESET}请重新您的输入选择 [1/2/0]：${RESET}")" config_choice
                 ;;
         esac
     done
@@ -580,7 +580,7 @@ start_hysteria_service() {
         echo ""
         
         # 让用户输入数字进行选择
-        read -p "${RESET}请输入您的选择 [1/2/0]：${RESET}" config_choice
+        read -p "$(echo -e "${RESET}请输入您的选择 [1/2/0]：${RESET}")" config_choice
 
         case "$config_choice" in
             1)
@@ -952,7 +952,7 @@ start_hysteria_service() {
                 echo ""
                 echo -e "${RED}您的输入有误！${RESET}"
                 echo ""
-                read -p "${RESET}请重新您的输入选择 [1/2/0]：${RESET}" config_choice
+                read -p "$(echo -e "${RESET}请重新您的输入选择 [1/2/0]：${RESET}")" config_choice
                 ;;
         esac
     done
@@ -968,7 +968,7 @@ set_port_hop() {
     while true; do
         echo ""
         echo ""
-        read -p "请输入希望设置的端口跳跃功能起始端口（按下回车键使用默认 20000 端口）: " user_start_port
+        read -p "$(echo -e "请输入希望设置的端口跳跃功能起始端口（按下回车键使用默认 20000 端口）: ")" user_start_port
         user_start_port=${user_start_port:-20000}
         if [[ "$user_start_port" =~ ^[0-9]+$ ]] && [ "$user_start_port" -ge 1 ] && [ "$user_start_port" -le 65535 ]; then
             echo ""
@@ -982,7 +982,7 @@ set_port_hop() {
 
     while true; do
         echo ""
-        read -p "请输入希望设置的端口跳跃功能终止端口（按下回车键使用默认 60000 端口）: " user_end_port
+        read -p "$(echo -e "请输入希望设置的端口跳跃功能终止端口（按下回车键使用默认 60000 端口）: ")" user_end_port
         user_end_port=${user_end_port:-60000}
         if [[ "$user_end_port" =~ ^[0-9]+$ ]] && [ "$user_end_port" -ge 1 ] && [ "$user_end_port" -le 65535 ]; then
             echo ""
@@ -1311,21 +1311,7 @@ stop_hysteria_service() {
         echo -e "${RESET}${start_output}${RESET}"
         echo ""
         echo -e "${YELLOW}即将中止停止流程…${RESET}"
-        while true; do
-            echo ""
-            echo ""
-            echo ""
-            read -p "${ORANGE}请输入数字 0 来返回主菜单: ${ORANGE}" return_choice
-            if [ "$return_choice" == "0" ]; then
-                clear
-                return 0
-            else
-                echo ""
-                echo -e "${RED}您的输入有误！${RESET}"
-                echo ""
-                read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单：${ORANGE}")" return_choice
-            fi
-        done
+        return_to_main_menu
     fi
 
     # 3. 检测 Hysteria 2 的运行状态
@@ -1394,21 +1380,7 @@ restart_hysteria_service() {
         echo -e "${RESET}${start_output}${RESET}"
         echo ""
         echo -e "${YELLOW}即将中止重启流程…${RESET}"
-        while true; do
-            echo ""
-            echo ""
-            echo ""
-            read -p "${ORANGE}请输入数字 0 来返回主菜单: ${ORANGE}" return_choice
-            if [ "$return_choice" == "0" ]; then
-                clear
-                return 0
-            else
-                echo ""
-                echo -e "${RED}您的输入有误！${RESET}"
-                echo ""
-                read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单：${ORANGE}")" return_choice
-            fi
-        done
+        return_to_main_menu
     fi
 
     # 3. 检测 Hysteria 2 的运行状态
@@ -1468,7 +1440,7 @@ uninstall_hysteria() {
         # 2. 让用户确认是否继续卸载
         echo -e "${YELLOW}您即将进入卸载 Hysteria 2 的操作引导页面。正式卸载后，相关操作不可逆转。是否要开始？${RESET}"
         echo ""
-        read -p "${RESET}请输入您的选择：[Yy/Nn]${RESET}" user_choice
+        read -p "$(echo -e "${RESET}请输入您的选择：[Yy/Nn]${RESET}")" user_choice
         case "$user_choice" in
             Y|Yes|YES|yes)
                 ;;
@@ -1501,7 +1473,7 @@ uninstall_hysteria() {
         echo -e "${ORANGE}  0. 返回主菜单"
         echo ""
         echo ""
-        read -p "${RESET}请输入您的选择 [0-4]：${RESET}" uninstall_choice
+        read -p "$(echo -e "${RESET}请输入您的选择 [0-4]：${RESET}")" uninstall_choice
 
         case "$uninstall_choice" in
             1)
@@ -1679,7 +1651,7 @@ uninstall_hysteria() {
                 echo ""
                 echo -e "${RED}您的输入有误！${RESET}"
                 echo ""
-                read -p "${RESET}请重新您的输入选择 [0-4]：${RESET}" config_choice
+                read -p "$(echo -e "${RESET}请重新您的输入选择 [0-4]：${RESET}")" config_choice
                 ;;
         esac
     done
@@ -1707,7 +1679,7 @@ print_configuration() {
         echo -e "${ORANGE}   0. 返回主菜单${RESET}"
         echo ""
         echo ""
-        read -p "${RESET}请输入您的选择 [0-5]：${RESET}" print_choice
+        read -p "$(echo -e "${RESET}请输入您的选择 [0-5]：${RESET}")" print_choice
 
         case "$print_choice" in
             1)
@@ -1979,7 +1951,7 @@ print_configuration() {
                 echo ""
                 echo -e "${RED}您的输入有误！${RESET}"
                 echo ""
-                read -p "${RESET}请重新您的输入选择 [0-5]：${RESET}" config_choice
+                read -p "$(echo -e "${RESET}请重新您的输入选择 [0-5]：${RESET}")" config_choice
                 ;;
         esac
     done
@@ -2004,7 +1976,7 @@ common_tools() {
         echo -e "${ORANGE}  0. 返回主菜单"
         echo ""
         echo ""
-        read -p "${RESET}请输入您的选择 [0-3]：${RESET}" tool_choice
+        read -p "$(echo -e "${RESET}请输入您的选择 [0-3]：${RESET}")" tool_choice
 
         case "$tool_choice" in
             1)
@@ -2012,7 +1984,7 @@ common_tools() {
                 clear
 
                 # 2. 域名解析检测
-                read -p "请输入您要检测的域名: " domain
+                read -p "$(echo -e "请输入您要检测的域名: ")" domain
 
                 # 首次检测方案：nslookup
                 domain_ip=$(nslookup "$domain" | awk '/^Address: / { print $2 }' | grep -v "#")
@@ -2063,7 +2035,7 @@ common_tools() {
 
                 # 2. 端口占用检测
                 while true; do
-                    read -p "请输入您要检测的端口号 (1-65535): " port_number
+                    read -p "$(echo -e "请输入您要检测的端口号 (1-65535): ")" port_number
                     if validate_port "$port_number"; then
                         if ss -lntu | grep -q ":$port_number "; then
                             service=$(ss -lntu | grep ":$port_number " | awk '{print $1}')
@@ -2146,7 +2118,7 @@ common_tools() {
                         echo ""
                         echo -e "  0. 返回上一级菜单"
                         echo ""
-                        read -p "请输入您的选择: [0/1/2]" user_choice
+                        read -p "$(echo -e "请输入您的选择: [0/1/2]")" user_choice
 
                         case $user_choice in
                             1)
@@ -2176,7 +2148,7 @@ common_tools() {
                                 echo ""
                                 echo -e "${RED}您的输入有误！${RESET}"
                                 echo ""
-                                read -p "${RESET}请重新您的输入选择 [0/1/2]：${RESET}" user_choice
+                                read -p "$(echo -e "${RESET}请重新您的输入选择 [0/1/2]：${RESET}")" user_choice
                                 ;;
                         esac
                     done
@@ -2202,7 +2174,7 @@ common_tools() {
                 echo ""
                 echo -e "${RED}您的输入有误！${RESET}"
                 echo ""
-                read -p "${RESET}请重新您的输入选择 [0-3]：${RESET}" tool_choice
+                read -p "$(echo -e "${RESET}请重新您的输入选择 [0-3]：${RESET}")" tool_choice
                 ;;
         esac
     done
@@ -2277,7 +2249,7 @@ while true; do
     echo ""
     echo ""
     echo ""
-    read -p "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}" return_choice
+    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_choice
     if [ "$return_choice" == "0" ]; then
         clear
         return 0
