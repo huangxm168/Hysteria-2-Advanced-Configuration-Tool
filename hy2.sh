@@ -158,7 +158,7 @@ read_choice() {
 }
 
 # 1.安装/更新 Hysteria 2 最新版本
-install_latest_hysteria() {
+install_hysteria_latest_version() {
     # 1. 清屏
     clear
 
