@@ -196,7 +196,7 @@ install_hysteria_specified_version() {
     while true; do
         echo ""
         echo ""
-        read -p "${RESET}请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}" version_number
+        read -p "请输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}" version_number
         # 检查输入是否为合法版本号格式 (例如: 1.0.0)
         if [[ "$version_number" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             break  # 如果格式正确，跳出循环，继续后续流程
@@ -205,7 +205,7 @@ install_hysteria_specified_version() {
             echo ""
             echo -e "${RED}您输入的版本号格式无效！${RESET}"
             echo ""
-            read -p "$(echo -e "${RESET}请重新输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}")" version_number
+            read -p "$(echo -e "请重新输入您需要安装/更新的 Hysteria 2 版本号（如 2.5.1）：${RESET}")" version_number
         fi
     done
 
