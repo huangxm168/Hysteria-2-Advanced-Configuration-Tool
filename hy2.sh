@@ -84,31 +84,31 @@ show_menu() {
     while true; do
         echo ""
         echo ""
-        echo -e "${ORANGE}请选择您需要的功能：${RESET}"
+        echo -e "${BLUE}请选择您需要的功能：${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}  1. 安装/更新 Hysteria 2 最新版本${RESET}"
-        echo -e "${ORANGE}  2. 安装/更新 Hysteria 2 指定版本${RESET}"
+        echo -e "${GREEN}  1. 安装/更新 Hysteria 2 最新版本${RESET}"
+        echo -e "${GREEN}  2. 安装/更新 Hysteria 2 指定版本${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}  3  编辑服务端配置文件${RESET}"
-        echo -e "${ORANGE}  4. 启动 Hysteria 2 并查看服务状态${RESET}"
+        echo -e "${GREEN}  3. 编辑服务端配置文件${RESET}"
+        echo -e "${GREEN}  4. 启动 Hysteria 2 并查看服务状态${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}  5. 设置端口跳跃${RESET}"
-        echo -e "${ORANGE}  6. 设置系统缓冲区${RESET}"
+        echo -e "${GREEN}  5. 设置端口跳跃${RESET}"
+        echo -e "${GREEN}  6. 设置系统缓冲区${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}  7. 停止 Hysteria 2${RESET}"
-        echo -e "${ORANGE}  8. 重启 Hysteria 2${RESET}"
-        echo -e "${ORANGE}  9. 卸载 Hysteria 2${RESET}"
+        echo -e "${GREEN}  7. 停止 Hysteria 2${RESET}"
+        echo -e "${GREEN}  8. 重启 Hysteria 2${RESET}"
+        echo -e "${GREEN}  9. 卸载 Hysteria 2${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE} 10. 打印相关配置${RESET}"
-        echo -e "${ORANGE} 11. 常用工具${RESET}"
+        echo -e "${GREEN} 10. 打印相关配置${RESET}"
+        echo -e "${GREEN} 11. 常用工具${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}  0. 退出脚本${RESET}"
+        echo -e "${YELLOW}  0. 退出脚本${RESET}"
         echo ""
 
         # 用户输入选择并验证
@@ -145,7 +145,8 @@ read_choice() {
             break  # 输入有效，退出循环
         else
             # 提示用户输入无效，并在提示后重新输入
-            echo -e "${RED}输入有误！${RESET}"
+            echo ""
+            echo -e "${RED}您的输入有误！${RESET}"
             echo ""
             read -p "$(echo -e "${RESET}请重新输入您的选择 [0-11]：${RESET}")" choice
             # 验证用户的重新输入
@@ -242,12 +243,12 @@ edit_server_config() {
         clear
 
         # 2. 提示信息
-        echo -e "${ORANGE}请选择您要搭建 Hysteria 2 的方式："
+        echo -e "${BLUE}请选择您要搭建 Hysteria 2 的方式：${RESET}"
         echo ""
-        echo -e "${ORANGE}   1. 自备域名搭建"
-        echo -e "${ORANGE}   2. 无域名搭建"
+        echo -e "${GREEN}   1. ${RESET}自备域名搭建"
+        echo -e "${GREEN}   2. ${RESET}无域名搭建"
         echo ""
-        echo -e "${ORANGE}   0. 返回主菜单"
+        echo -e "${YELLOW}   0. ${RESET}返回主菜单"
         echo ""
         
         # 让用户输入数字进行选择
@@ -570,12 +571,12 @@ start_hysteria_service() {
         clear
 
         # 2. 提示信息
-        echo -e "${ORANGE}请根据您搭建 Hysteria 2 的方式来选择启动模式："
+        echo -e "${ORANGE}请根据您搭建 Hysteria 2 的方式来选择启动模式：${RESET}"
         echo ""
-        echo -e "${ORANGE}   1. 启动通过自备域名搭建的 Hysteria 2 服务"
-        echo -e "${ORANGE}   2. 启动通过无域名搭建的 Hysteria 2 服务"
+        echo -e "${GREEN}   1. ${RESET}启动通过自备域名搭建的 Hysteria 2 服务"
+        echo -e "${GREEN}   2. ${RESET}启动通过无域名搭建的 Hysteria 2 服务"
         echo ""
-        echo -e "${ORANGE}   0. 返回主菜单"
+        echo -e "${YELLOW}   0. ${RESET}返回主菜单"
         echo ""
         
         # 让用户输入数字进行选择
