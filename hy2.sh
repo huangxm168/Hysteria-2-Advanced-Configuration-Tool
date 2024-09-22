@@ -121,15 +121,16 @@ fi
 # 更新系统和软件包并安装依赖
 echo ""
 echo -e "${YELLOW}正在更新系统并安装环境依赖……${RESET}"
-apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed nslookup dig -y  > /dev/null
+echo ""
+apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed dnsutils -y  > /dev/null
 if [ $? -ne 0 ]; then
     echo ""
     echo -e "${RED}系统和软件更新失败，请检查相关错误，或手动更新后再次运行脚本。${RESET}"
     echo ""
     echo -e "${MAGENTA}脚本已自动退出。${RESET}"
+    echo ""
     exit 1
 fi
-echo ""
 echo -e "${GREEN}已成功更新系统和软件！${RESET}"
 
 # 清除屏幕内容
