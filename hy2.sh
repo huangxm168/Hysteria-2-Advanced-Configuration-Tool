@@ -13,6 +13,81 @@ MAGENTA="\033[38;2;255;32;140m"  # 洋红色
 ORANGE="\033[38;2;247;116;41m"
 RESET="\033[0m"
 
+# 自备域名 YAML 模板
+yaml_template_1=$(cat <<'EOF'
+listen: :$port_number
+
+acme:
+  domains:
+    - $domain_change
+  email: tim_cook@gmail.com
+
+auth:
+  type: password
+  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
+
+masquerade:
+  type: proxy
+  proxy:
+    url: https://bing.com
+    rewriteHost: true
+EOF
+)
+
+# 无域名 YAML 模板
+yaml_template_2=$(cat <<'EOF'
+listen: :$port_number
+ 
+tls:
+  cert: /etc/hysteria/server.crt
+  key: /etc/hysteria/server.key
+ 
+auth:
+  type: password
+  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
+ 
+masquerade:
+  type: proxy
+  proxy:
+    url: https://bing.com
+    rewriteHost: true
+EOF
+)
+
+# 返回上一级菜单的提示函数
+function return_to_sub_menu() {
+    while true; do
+        echo ""
+        echo ""
+        read -p -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}" return_to_sub_choice
+        if [ "$return_to_sub_choice" == "0" ]; then
+            break
+        else
+            echo ""
+            echo -e "${RED}输入有误！${RESET}"
+            echo ""
+        fi
+    done
+}
+
+# 返回主菜单提示函数
+function return_to_main_menu() {
+while true; do
+    echo ""
+    echo ""
+    echo ""
+    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
+    if [ "$return_to_main_choice" == "0" ]; then
+        clear
+        return 0
+    else
+        echo ""
+        echo -e "${RED}您的输入有误！${RESET}"
+        echo ""
+    fi
+done
+}
+
 # 打印欢迎横幅
 echo ""
 echo -e "------- Welcome to the Hysteria 2 Advanced Configuration Tool -------"
@@ -60,28 +135,28 @@ echo -e "${GREEN}已成功更新系统和软件！${RESET}"
 # 清除屏幕内容
 clear
 
-# 打印欢迎横幅
-echo ""
-echo -e "------- Welcome to the Hysteria 2 Advanced Configuration Tool -------"
-echo ""
-echo ""
-echo ""
-echo -e " █████   █████  ███         █████   █████ █████ █████ ██████   ██████
-░░███   ░░███  ░░░         ░░███   ░░███ ░░███ ░░███ ░░██████ ██████ 
- ░███    ░███  ████         ░███    ░███  ░░███ ███   ░███░█████░███ 
- ░███████████ ░░███         ░███████████   ░░█████    ░███░░███ ░███ 
- ░███░░░░░███  ░███         ░███░░░░░███    ███░███   ░███ ░░░  ░███ 
- ░███    ░███  ░███         ░███    ░███   ███ ░░███  ░███      ░███ 
- █████   █████ █████  ██    █████   █████ █████ █████ █████     █████
-░░░░░   ░░░░░ ░░░░░  ██    ░░░░░   ░░░░░ ░░░░░ ░░░░░ ░░░░░     ░░░░░ 
-                    ░░                                               
-                                                                     
-                                                                     "
-echo -e "----------------- 欢迎使用 Hysteria 2 高级配置工具 -----------------"
-
 # 显示菜单并处理输入
 show_menu() {
     while true; do
+        # 打印欢迎横幅
+        echo ""
+        echo -e "------- Welcome to the Hysteria 2 Advanced Configuration Tool -------"
+        echo ""
+        echo ""
+        echo ""
+        echo -e " █████   █████  ███         █████   █████ █████ █████ ██████   ██████
+        ░░███   ░░███  ░░░         ░░███   ░░███ ░░███ ░░███ ░░██████ ██████ 
+        ░███    ░███  ████         ░███    ░███  ░░███ ███   ░███░█████░███ 
+        ░███████████ ░░███         ░███████████   ░░█████    ░███░░███ ░███ 
+        ░███░░░░░███  ░███         ░███░░░░░███    ███░███   ░███ ░░░  ░███ 
+        ░███    ░███  ░███         ░███    ░███   ███ ░░███  ░███      ░███ 
+        █████   █████ █████  ██    █████   █████ █████ █████ █████     █████
+        ░░░░░   ░░░░░ ░░░░░  ██    ░░░░░   ░░░░░ ░░░░░ ░░░░░ ░░░░░     ░░░░░ 
+                            ░░                                               
+                                                                            
+                                                                            "
+        echo -e "----------------- 欢迎使用 Hysteria 2 高级配置工具 -----------------"        
+        # 展示菜单
         echo ""
         echo ""
         echo -e "${ORANGE}请选择您需要的功能：${RESET}"
@@ -2186,77 +2261,3 @@ while true; do
     read_choice
     process_choice
 done
-
-# 自备域名 YAML 模板
-yaml_template_1=$(cat <<'EOF'
-listen: :$port_number
-
-acme:
-  domains:
-    - $domain_change
-  email: tim_cook@gmail.com
-
-auth:
-  type: password
-  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
-
-masquerade:
-  type: proxy
-  proxy:
-    url: https://bing.com
-    rewriteHost: true
-EOF
-)
-
-# 无域名 YAML 模板
-yaml_template_2=$(cat <<'EOF'
-listen: :$port_number
- 
-tls:
-  cert: /etc/hysteria/server.crt
-  key: /etc/hysteria/server.key
- 
-auth:
-  type: password
-  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
- 
-masquerade:
-  type: proxy
-  proxy:
-    url: https://bing.com
-    rewriteHost: true
-EOF
-)
-
-# 返回上一级菜单的提示函数
-function return_to_sub_menu() {
-    while true; do
-        echo ""
-        echo ""
-        read -p -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}" return_to_sub_choice
-        if [ "$return_to_sub_choice" == "0" ]; then
-            break
-        else
-            echo ""
-            echo -e "${RED}输入有误！${RESET}"
-            echo ""
-        fi
-    done
-}
-# 返回主菜单提示函数
-function return_to_main_menu() {
-while true; do
-    echo ""
-    echo ""
-    echo ""
-    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
-    if [ "$return_to_main_choice" == "0" ]; then
-        clear
-        return 0
-    else
-        echo ""
-        echo -e "${RED}您的输入有误！${RESET}"
-        echo ""
-    fi
-done
-}
