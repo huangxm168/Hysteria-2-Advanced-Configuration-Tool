@@ -249,6 +249,11 @@ install_hysteria_latest_version() {
         echo ""
         echo ""
         echo -e "${GREEN}您已经成功安装/更新 Hysteria 2 最新版本！${RESET}"
+    elif echo "$install_output" | grep -q "Installed version is up-to-date, there is nothing to do."; then
+        # 系统已安装最新版本
+        echo ""
+        echo ""
+        echo -e "${GREEN}您当前的 Hysteria 2 已经是最新版本！${RESET}"
     else
         # 安装失败
         echo ""
