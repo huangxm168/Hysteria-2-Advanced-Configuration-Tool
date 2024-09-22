@@ -121,7 +121,7 @@ fi
 # 更新系统和软件包并安装依赖
 echo ""
 echo -e "${YELLOW}正在更新系统并安装环境依赖……${RESET}"
-apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed -y  > /dev/null
+apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed nslookup dig -y  > /dev/null
 if [ $? -ne 0 ]; then
     echo ""
     echo -e "${RED}系统和软件更新失败，请检查相关错误，或手动更新后再次运行脚本。${RESET}"
@@ -244,7 +244,7 @@ install_hysteria_latest_version() {
     install_output=$(bash <(curl -fsSL https://get.hy2.sh/) 2>&1)
 
     # 3. 检查安装结果
-    if echo "$install_output" | grep -q -E "Congratulation! Hysteria 2 has been successfully installed on your server.|Installed version is up-to-date, there is nothing to do.|Hysteria has been successfully update to"; then
+    if echo "$install_output" | grep -q -E "Congratulation! Hysteria 2 has been successfully installed on your server.|Hysteria has been successfully update to"; then
         # 安装成功
         echo ""
         echo ""
@@ -2198,7 +2198,7 @@ common_tools() {
                         echo ""
                         echo -e "  0. 返回上一级菜单"
                         echo ""
-                        read -p "$(echo -e "请输入您的选择: [0/1/2]")" user_choice
+                        read -p "$(echo -e "请输入您的选择: [1/2/0]")" user_choice
 
                         case $user_choice in
                             1)
@@ -2228,7 +2228,7 @@ common_tools() {
                                 echo ""
                                 echo -e "${RED}您的输入有误！${RESET}"
                                 echo ""
-                                read -p "$(echo -e "${RESET}请重新您的输入选择 [0/1/2]：${RESET}")" user_choice
+                                read -p "$(echo -e "${RESET}请重新您的输入选择 [1/2/0]：${RESET}")" user_choice
                                 ;;
                         esac
                     done
