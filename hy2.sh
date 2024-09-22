@@ -59,7 +59,7 @@ function return_to_sub_menu() {
     while true; do
         echo ""
         echo ""
-        read -p -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}" return_to_sub_choice
+        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice
         if [ "$return_to_sub_choice" == "0" ]; then
             break
         else
