@@ -165,7 +165,7 @@ install_hysteria_latest_version() {
     # 2. 运行安装命令并隐藏输出
     echo ""
     echo ""
-    echo "${BLUE}正在安装/更新 Hysteria 2 最新版本...${RESET}"
+    echo -e "${BLUE}正在安装/更新 Hysteria 2 最新版本...${RESET}"
     install_output=$(bash <(curl -fsSL https://get.hy2.sh/) 2>&1)
 
     # 3. 检查安装结果
@@ -173,14 +173,14 @@ install_hysteria_latest_version() {
         # 安装成功
         echo ""
         echo ""
-        echo "${GREEN}您已经成功安装/更新 Hysteria 2 最新版本！${RESET}"
+        echo -e "${GREEN}您已经成功安装/更新 Hysteria 2 最新版本！${RESET}"
     else
         # 安装失败
         echo ""
         echo ""
-        echo "${RED}安装/更新 Hysteria 2 最新版本时遇到了错误！错误信息如下：${RESET}"
+        echo -e "${RED}安装/更新 Hysteria 2 最新版本时遇到了错误！错误信息如下：${RESET}"
         echo ""
-        echo "${RESET}$install_output${RESET}"
+        echo -e "${RESET}$install_output${RESET}"
     fi
 
     # 4. 提示返回主菜单
@@ -229,7 +229,7 @@ install_hysteria_specified_version() {
         echo ""
         echo -e "${RED}安装/更新 Hysteria 2 v$version_number 版本时遇到了错误！输出信息如下：${RESET}"
         echo ""
-        echo "${RESET}$install_output${RESET}"
+        echo -e "${RESET}$install_output${RESET}"
     fi
 
     # 5. 提示返回主菜单
@@ -260,7 +260,7 @@ edit_server_config() {
 
                 # 1. 清屏并输出提示
                 clear
-                echo "${BLUE}准备配置服务端配置文件...${RESET}"
+                echo -e "${BLUE}准备配置服务端配置文件...${RESET}"
 
                 # 随机生成推荐的可用端口号
                 generate_random_port() {
@@ -380,7 +380,7 @@ edit_server_config() {
                 # 4. 编辑 YAML 配置文件
                 echo ""
                 echo ""
-                echo "${BLUE}正在自动编辑服务端配置文件...${RESET}"
+                echo -e "${BLUE}正在自动编辑服务端配置文件...${RESET}"
 
                 # 检查 YAML 文件并删除
                 config_file="/etc/hysteria/config.yaml"
@@ -420,7 +420,7 @@ edit_server_config() {
                 
                 # 1. 清屏并输出提示
                 clear
-                echo "${BLUE}准备配置服务器配置文件...${RESET}"
+                echo -e "${BLUE}准备配置服务器配置文件...${RESET}"
 
                 # 随机生成推荐的可用端口号
                 generate_random_port() {
@@ -514,7 +514,7 @@ edit_server_config() {
                 # 4. 编辑 YAML 配置文件
                 echo ""
                 echo ""
-                echo "${BLUE}正在自动编辑服务端配置文件...${RESET}"
+                echo -e "${BLUE}正在自动编辑服务端配置文件...${RESET}"
 
                 # 检查 YAML 文件并删除
                 config_file="/etc/hysteria/config.yaml"
@@ -770,7 +770,7 @@ start_hysteria_service() {
                             echo ""
                             echo -e "${RED}Hysteria 2 服务启动和运行失败！以下是运行状态信息：${RESET}"
                             echo ""
-                            echo "${RESET}$status_output${RESET}"
+                            echo -e "${RESET}$status_output${RESET}"
                         fi
                     fi
                 done
@@ -935,7 +935,7 @@ start_hysteria_service() {
                             echo ""
                             echo -e "${RED}Hysteria 2 服务启动和运行失败！以下是运行状态信息：${RESET}"
                             echo ""
-                            echo "${RESET}$status_output${RESET}"
+                            echo -e "${RESET}$status_output${RESET}"
                         fi
                     fi
                 done
@@ -1284,10 +1284,10 @@ set_buffer_size() {
 
     # 3. 输出 OpenWrt 等应用的相关配置提示
     echo ""
-    echo "请在 OpenWrt 等应用内对应配置以下内容："
+    echo -e "请在 OpenWrt 等应用内对应配置以下内容："
     echo ""
-    echo "QUIC 流接收窗口：26843545"
-    echo "QUIC 连接接收窗口：67108864"
+    echo -e "QUIC 流接收窗口：26843545"
+    echo -e "QUIC 连接接收窗口：67108864"
 
     # 4. 提示返回主菜单
     return_to_main_menu
@@ -1352,7 +1352,7 @@ stop_hysteria_service() {
                 echo ""
                 echo -e "${RED}Hysteria 2 服务停止失败！以下是状态信息：${RESET}"
                 echo ""
-                echo "${RESET}$status_output${RESET}"
+                echo -e "${RESET}$status_output${RESET}"
             fi
         fi
     done
@@ -1421,7 +1421,7 @@ restart_hysteria_service() {
                 echo ""
                 echo -e "${RED}Hysteria 2 服务重启和运行失败！以下是运行状态信息：${RESET}"
                 echo ""
-                echo "${RESET}$status_output${RESET}"
+                echo -e "${RESET}$status_output${RESET}"
             fi
         fi
     done
@@ -2233,8 +2233,8 @@ function return_to_sub_menu() {
     while true; do
         echo ""
         echo ""
-        read -p -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}" return_choice
-        if [ "$return_choice" == "0" ]; then
+        read -p -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}" return_to_sub_choice
+        if [ "$return_to_sub_choice" == "0" ]; then
             break
         else
             echo ""
@@ -2249,8 +2249,8 @@ while true; do
     echo ""
     echo ""
     echo ""
-    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_choice
-    if [ "$return_choice" == "0" ]; then
+    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
+    if [ "$return_to_main_choice" == "0" ]; then
         clear
         return 0
     else
