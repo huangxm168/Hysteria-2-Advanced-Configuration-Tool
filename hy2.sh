@@ -121,7 +121,7 @@ fi
 echo ""
 echo -e "${YELLOW}正在更新系统并安装环境依赖……${RESET}"
 echo ""
-apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed dnsutils -y  > /dev/null
+apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed dnsutils yq -y  > /dev/null
 if [ $? -ne 0 ]; then
     echo ""
     echo -e "${RED}系统和软件更新失败，请检查相关错误，或手动更新后再次运行脚本。${RESET}"
