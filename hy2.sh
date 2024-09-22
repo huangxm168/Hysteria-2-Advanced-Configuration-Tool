@@ -78,7 +78,6 @@ while true; do
     echo ""
     read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
     if [ "$return_to_main_choice" == "0" ]; then
-        clear
         return 0
     else
         echo ""
@@ -133,11 +132,11 @@ if [ $? -ne 0 ]; then
 fi
 echo -e "${GREEN}已成功更新系统和软件！${RESET}"
 
-# 清除屏幕内容
-clear
-
 # 显示菜单并处理输入
 show_menu() {
+    # 清屏
+    clear
+
     while true; do
         # 打印欢迎横幅
         echo ""
@@ -1545,13 +1544,13 @@ uninstall_hysteria() {
         echo -e "${ORANGE}请选择您要执行的操作："
         echo ""
         echo ""
-        echo -e "${ORANGE}  1. 一键卸载 Hysteria 2 服务及相关配置、文件"
+        echo -e "${GREEN}  1. 一键卸载 Hysteria 2 服务及相关配置、文件"
         echo ""
-        echo -e "${ORANGE}  2. 卸载 Hysteria 2 主程序"
-        echo -e "${ORANGE}  3. 删除配置文件和 ACME 证书"
-        echo -e "${ORANGE}  4. 禁用 Hysteria 2 相关系统服务"
+        echo -e "${GREEN}  2. 卸载 Hysteria 2 主程序"
+        echo -e "${GREEN}  3. 删除配置文件和 ACME 证书"
+        echo -e "${GREEN}  4. 禁用 Hysteria 2 相关系统服务"
         echo ""
-        echo -e "${ORANGE}  0. 返回主菜单"
+        echo -e "${YELLOW}  0. 返回主菜单"
         echo ""
         echo ""
         read -p "$(echo -e "${RESET}请输入您的选择 [0-4]：${RESET}")" uninstall_choice
@@ -1750,14 +1749,14 @@ print_configuration() {
         echo -e "${ORANGE}请输入相应数字来选择您要打印的配置：${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}   1. Hysteria 2 服务监听的端口号${RESET}"
-        echo -e "${ORANGE}   2. 端口跳跃范围${RESET}"
-        echo -e "${ORANGE}   3. 域名${RESET}"
-        echo -e "${ORANGE}   4. 密码${RESET}"
-        echo -e "${ORANGE}   5. 证书和私钥保存路径${RESET}"
+        echo -e "${GREEN}   1. Hysteria 2 服务监听的端口号${RESET}"
+        echo -e "${GREEN}   2. 端口跳跃范围${RESET}"
+        echo -e "${GREEN}   3. 域名${RESET}"
+        echo -e "${GREEN}   4. 密码${RESET}"
+        echo -e "${GREEN}   5. 证书和私钥保存路径${RESET}"
         echo ""
         echo ""
-        echo -e "${ORANGE}   0. 返回主菜单${RESET}"
+        echo -e "${YELLOW}   0. 返回主菜单${RESET}"
         echo ""
         echo ""
         read -p "$(echo -e "${RESET}请输入您的选择 [0-5]：${RESET}")" print_choice
@@ -2050,11 +2049,11 @@ common_tools() {
         echo -e "${ORANGE}请选择您要使用的工具："
         echo ""
         echo ""
-        echo -e "${ORANGE}  1. 域名解析检测"
-        echo -e "${ORANGE}  2. 端口占用检测"
-        echo -e "${ORANGE}  3. 查看防火墙配置内容"
+        echo -e "${GREEN}  1. 域名解析检测"
+        echo -e "${GREEN}  2. 端口占用检测"
+        echo -e "${GREEN}  3. 查看防火墙配置内容"
         echo ""
-        echo -e "${ORANGE}  0. 返回主菜单"
+        echo -e "${YELLOW}  0. 返回主菜单"
         echo ""
         echo ""
         read -p "$(echo -e "${RESET}请输入您的选择 [0-3]：${RESET}")" tool_choice
