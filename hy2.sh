@@ -61,7 +61,23 @@ function return_to_sub_menu() {
         echo ""
         read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice
         if [ "$return_to_sub_choice" == "0" ]; then
-            break
+            return
+        else
+            echo ""
+            echo -e "${RED}输入有误！${RESET}"
+            echo ""
+        fi
+    done
+}
+
+# 返回上一级菜单的提示函数 2
+function return_to_sub_menu2() {
+    while true; do
+        echo ""
+        echo ""
+        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice2
+        if [ "$return_to_sub_choice2" == "0" ]; then
+            break 2
         else
             echo ""
             echo -e "${RED}输入有误！${RESET}"
@@ -78,6 +94,7 @@ while true; do
     echo ""
     read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
     if [ "$return_to_main_choice" == "0" ]; then
+        tput reset
         return 0
     else
         echo ""
@@ -653,10 +670,10 @@ start_hysteria_service() {
         # 2. 提示信息
         echo -e "${ORANGE}请根据您搭建 Hysteria 2 的方式来选择启动模式：${RESET}"
         echo ""
-        echo -e "${GREEN}   1. ${RESET}启动通过自备域名搭建的 Hysteria 2 服务"
-        echo -e "${GREEN}   2. ${RESET}启动通过无域名搭建的 Hysteria 2 服务"
+        echo -e "${GREEN}   1. 启动通过自备域名搭建的 Hysteria 2 服务${RESET}"
+        echo -e "${GREEN}   2. 启动通过无域名搭建的 Hysteria 2 服务${RESET}"
         echo ""
-        echo -e "${YELLOW}   0. ${RESET}返回主菜单"
+        echo -e "${YELLOW}   0. 返回主菜单${RESET}"
         echo ""
         
         # 让用户输入数字进行选择
@@ -773,10 +790,6 @@ start_hysteria_service() {
                 fi
 
                 # 3. 启动 Hysteria 2 服务
-
-                echo ""
-                echo ""
-                echo -e "${BLUE}正在准备 Hysteria 2 服务启动环境…${RESET}"
 
                 # 启用 Hysteria 2 服务并隐藏输出
                 echo ""
