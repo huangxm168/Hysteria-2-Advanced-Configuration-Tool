@@ -515,11 +515,11 @@ edit_server_config() {
                 
                 echo ""
                 echo ""
-                echo -e "${BLUE}已为您打印服务端配置文件的关键参数如下：${RESET}"
+                echo -e "${ORANGE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
-                echo -e "${GREEN}端口号：${RESET}$config_port_number"
-                echo -e "${GREEN}域名：${RESET}$config_domain"
-                echo -e "${GREEN}密码：${RESET}$config_passwd"
+                echo -e "${CYAN}端口号：${RESET}$config_port_number"
+                echo -e "${CYAN}域名：${RESET}$config_domain"
+                echo -e "${CYAN}密码：${RESET}$config_passwd"
 
                 # 7. 提示返回子菜单
                 return_to_sub_menu
@@ -658,13 +658,13 @@ edit_server_config() {
                 
                 echo ""
                 echo ""
-                echo -e "${BLUE}已为您打印服务端配置文件的关键参数如下：${RESET}"
+                echo -e "${ORANGE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
-                echo -e "${GREEN}端口号：${RESET}$config_port_number"
-                echo -e "${GREEN}密码：${RESET}$config_passwd"
+                echo -e "${CYAN}端口号：${RESET}$config_port_number"
+                echo -e "${CYAN}密码：${RESET}$config_passwd"
                 echo ""
-                echo -e "${GREEN}自签证书保存路径：${RESET}/etc/hysteria/server.crt"
-                echo -e "${GREEN}私钥保存路径：${RESET}/etc/hysteria/server.key"
+                echo -e "${CYAN}自签证书保存路径：${RESET}/etc/hysteria/server.crt"
+                echo -e "${CYAN}私钥保存路径：${RESET}/etc/hysteria/server.key"
 
                 # 7. 提示返回子菜单
                 return_to_sub_menu
@@ -719,7 +719,8 @@ start_hysteria_service() {
 
                 if [ -n "$config_port_number" ]; then
                     echo ""
-                    echo -e "${GREEN}检测到 Hysteria 2 监听的端口号为: $config_port_number${RESET}"
+                    echo -e "${RESET}检测到 Hysteria 2 监听的端口号为: $config_port_number${RESET}"
+                    echo ""
                     echo ""
                     echo -e "${BLUE}正在检查端口号是否被占用…${RESET}"
                     if ss -lntu | grep -q ":$config_port_number "; then
@@ -752,7 +753,7 @@ start_hysteria_service() {
 
                 if [ -n "$config_domain" ]; then
                     echo ""
-                    echo -e "${GREEN}检测到配置文件中的自备域名为: $config_domain${RESET}"
+                    echo -e "${RESET}检测到配置文件中的自备域名为: $config_domain${RESET}"
                     
                     # 获取服务器的 IP
                     server_ip=$(curl -s ifconfig.me)
@@ -817,6 +818,7 @@ start_hysteria_service() {
 
                 # 启用 Hysteria 2 服务并隐藏输出
                 echo ""
+                echo ""
                 echo -e "${BLUE}正在为 Hysteria 2 服务启用持久化配置…${RESET}"
                 enable_output=$(systemctl enable hysteria-server.service 2>&1 > /dev/null)
                 if [ $? -eq 0 ]; then
@@ -833,6 +835,7 @@ start_hysteria_service() {
                 fi
 
                 # 隐藏输出启动 Hysteria 2 服务并捕获错误信息
+                echo ""
                 echo ""
                 echo -e "${BLUE}正在发送启动 Hysteria 2 服务的指令…${RESET}"
                 start_output=$(systemctl start hysteria-server.service 2>&1 > /dev/null)
@@ -871,6 +874,7 @@ start_hysteria_service() {
                 max_attempts=3
 
                 # 尝试第一次检测
+                sleep 3
                 for attempt in $(seq 1 $max_attempts); do
                     if check_hysteria_status; then
                         echo ""
