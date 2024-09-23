@@ -24,7 +24,7 @@ acme:
 
 auth:
   type: password
-  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
+  password: $passwd_change
 
 masquerade:
   type: proxy
@@ -44,7 +44,7 @@ tls:
  
 auth:
   type: password
-  password: $(tr -dc A-Za-z0-9 </dev/urandom | head -c 24)
+  password: $passwd_change
  
 masquerade:
   type: proxy
@@ -61,6 +61,7 @@ function return_to_sub_menu() {
         echo ""
         read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice
         if [ "$return_to_sub_choice" == "0" ]; then
+            tput reset
             return
         else
             echo ""
@@ -138,7 +139,7 @@ fi
 echo ""
 echo -e "${YELLOW}正在更新系统并安装环境依赖……${RESET}"
 echo ""
-apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed dnsutils yq -y  > /dev/null
+apt-get update > /dev/null && apt-get upgrade -y > /dev/null && apt-get install curl wget unzip openssl sed dnsutils -y  > /dev/null
 if [ $? -ne 0 ]; then
     echo ""
     echo -e "${RED}系统和软件更新失败，请检查相关错误，或手动更新后再次运行脚本。${RESET}"
@@ -474,7 +475,17 @@ edit_server_config() {
                     fi
                 done
 
-                # 4. 编辑 YAML 配置文件
+                # 4. 生成密码
+
+                # 生成 24 个字符的随机密码，包含大写字母、小写字母和数字的函数
+                generate_password() {
+                    tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24
+                }
+
+                # 生成
+                passwd_change=$(generate_password)
+
+                # 5. 编辑 YAML 配置文件
                 echo ""
                 echo ""
                 echo -e "${BLUE}正在自动编辑服务端配置文件...${RESET}"
@@ -491,25 +502,26 @@ edit_server_config() {
                 # 替换占位符为实际的端口号和域名
                 sudo sed -i "s/\$port_number/$port_number/g" /etc/hysteria/config.yaml
                 sudo sed -i "s/\$domain_change/$domain_change/g" /etc/hysteria/config.yaml
+                sudo sed -i "s/\$passwd_change/$passwd_change/g" /etc/hysteria/config.yaml
 
                 # 输出成功提示
                 echo ""
                 echo -e "${GREEN}已成功配置服务端配置文件！${RESET}"
 
-                # 5. 提取并打印配置文件中的关键参数
-                config_port_number=$(grep "listen" /etc/hysteria/config.yaml | awk '{print $2}' | sed 's/://')
-                config_domain=$(grep "domains" /etc/hysteria/config.yaml | awk '{print $2}')
-                config_passwd=$(grep "password" /etc/hysteria/config.yaml | awk '{print $2}')
+                # 6. 提取并打印配置文件中的关键参数
+                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
+                config_domain=$(grep -m 1 'domains:' -A 1 /etc/hysteria/config.yaml | grep -Eo '^[[:space:]]*-[[:space:]]*[^[:space:]#]+' | sed 's/^[[:space:]]*-[[:space:]]*//')
+                config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
                 
                 echo ""
                 echo ""
                 echo -e "${BLUE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
-                echo -e "${GREEN}端口号：$config_port_number${RESET}"
-                echo -e "${GREEN}域名：$config_domain${RESET}"
-                echo -e "${GREEN}密码：$config_passwd${RESET}"
+                echo -e "${GREEN}端口号：${RESET}$config_port_number"
+                echo -e "${GREEN}域名：${RESET}$config_domain"
+                echo -e "${GREEN}密码：${RESET}$config_passwd"
 
-                # 6. 提示返回子菜单
+                # 7. 提示返回子菜单
                 return_to_sub_menu
                 ;;
             2)
@@ -608,7 +620,17 @@ edit_server_config() {
                     done
                 fi
 
-                # 4. 编辑 YAML 配置文件
+                # 4. 生成密码
+
+                # 生成 24 个字符的随机密码，包含大写字母、小写字母和数字的函数
+                generate_password() {
+                    tr -dc 'A-Za-z0-9' </dev/urandom | head -c 24
+                }
+                
+                # 生成
+                passwd_change=$(generate_password)
+
+                # 5. 编辑 YAML 配置文件
                 echo ""
                 echo ""
                 echo -e "${BLUE}正在自动编辑服务端配置文件...${RESET}"
@@ -624,31 +646,33 @@ edit_server_config() {
 
                 # 替换占位符为实际的端口号和域名
                 sudo sed -i "s/\$port_number/$port_number/g" /etc/hysteria/config.yaml
+                sudo sed -i "s/\$passwd_change/$passwd_change/g" /etc/hysteria/config.yaml
 
                 # 输出成功提示
                 echo ""
                 echo -e "${GREEN}已成功配置服务端配置文件！${RESET}"
 
-                # 5. 提取并打印配置文件中的关键参数
-                config_port_number=$(grep "listen" /etc/hysteria/config.yaml | awk '{print $2}' | sed 's/://')
-                config_passwd=$(grep "password" /etc/hysteria/config.yaml | awk '{print $2}')
+                # 6. 提取并打印配置文件中的关键参数
+                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
+                config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
                 
                 echo ""
                 echo ""
                 echo -e "${BLUE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
-                echo -e "${GREEN}端口号：$config_port_number${RESET}"
-                echo -e "${GREEN}密码：$config_passwd${RESET}"
+                echo -e "${GREEN}端口号：${RESET}$config_port_number"
+                echo -e "${GREEN}密码：${RESET}$config_passwd"
                 echo ""
-                echo -e "自签证书保存路径：/etc/hysteria/server.crt"
-                echo -e "私钥保存路径：/etc/hysteria/server.key"
+                echo -e "${GREEN}自签证书保存路径：${RESET}/etc/hysteria/server.crt"
+                echo -e "${GREEN}私钥保存路径：${RESET}/etc/hysteria/server.key"
 
-                # 6. 提示返回子菜单
+                # 7. 提示返回子菜单
                 return_to_sub_menu
                 ;;
             0)
                 # 返回主菜单
-                return
+                tput reset
+                return 0
                 ;;
             *)
                 # 无效输入，提示并重新读取输入
@@ -691,7 +715,7 @@ start_hysteria_service() {
                 echo ""
                 echo ""
                 echo -e "${BLUE}正在检查端口号配置…${RESET}"
-                config_port_number=$(yq e '.listen' /etc/hysteria/config.yaml | sed 's/://')
+                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
 
                 if [ -n "$config_port_number" ]; then
                     echo ""
@@ -723,8 +747,8 @@ start_hysteria_service() {
                 echo ""
                 echo -e "${BLUE}正在检查域名配置…${RESET}"
 
-                # 使用 yq 读取域名
-                config_domain=$(yq e '.domains[0]' /etc/hysteria/config.yaml)
+                # 使用 grep 读取域名并处理注释和空值
+                config_domain=$(grep -m 1 'domains:' -A 1 /etc/hysteria/config.yaml | grep -Eo '^[[:space:]]*-[[:space:]]*[^[:space:]#]+' | sed 's/^[[:space:]]*-[[:space:]]*//')
 
                 if [ -n "$config_domain" ]; then
                     echo ""
@@ -882,7 +906,7 @@ start_hysteria_service() {
                 echo ""
                 echo ""
                 echo -e "${BLUE}正在检查端口号配置…${RESET}"
-                config_port_number=$(yq e '.listen' /etc/hysteria/config.yaml | sed 's/://')
+                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
 
                 if [ -n "$config_port_number" ]; then
                     echo ""
@@ -915,8 +939,11 @@ start_hysteria_service() {
                 echo -e "${BLUE}准备检查自有证书配置…${RESET}"
 
                 # 提取证书和密钥路径
-                cert_path=$(yq e '.tls.cert' /etc/hysteria/config.yaml)
-                key_path=$(yq e '.tls.key' /etc/hysteria/config.yaml)
+
+                # 提取证书路径，允许路径中包含空格，并且检查是否以 .crt 结尾
+                cert_path=$(grep '^  cert:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*cert:[[:space:]]*//;s/[[:space:]]*#.*//' | grep -Eo '/[^[:space:]]+\.crt$')
+                # 提取密钥路径，允许路径中包含空格，并且检查是否以 .key 结尾
+                key_path=$(grep '^  key:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*key:[[:space:]]*//;s/[[:space:]]*#.*//' | grep -Eo '/[^[:space:]]+\.key$')
 
                 # 检查证书文件是否存在
                 if [ -f "$cert_path" ]; then
@@ -1038,7 +1065,8 @@ start_hysteria_service() {
                 ;;
             0)
                 # 返回主菜单
-                return
+                tput reset
+                return 0
                 ;;
             *)
                 # 无效输入，提示并重新读取输入
@@ -1136,7 +1164,7 @@ set_port_hop() {
     # 4. 根据 iptables 设置端口跳跃功能
 
     # 提取 Hysteria 2 监听端口
-    config_port_number=$(yq e '.listen.port' /etc/hysteria/config.yaml)
+    config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
 
     case $firewall_type in
         # 4. 根据 iptables 设置端口跳跃功能
@@ -1198,28 +1226,35 @@ set_port_hop() {
             # 4g. 保存 iptables 配置
 
             # 检测系统中是否已安装 netfilter-persistent
-            echo -e "${BLUE}正在检测是否安装 netfilter-persistent…${RESET}"
+            echo ""
+            echo ""
+            echo -e "${BLUE}准备保存端口跳跃配置…${RESET}"
             if command -v netfilter-persistent > /dev/null 2>&1; then
                 # 如果检测到 netfilter-persistent，则通过它保存 iptables 配置
-                echo -e "${GREEN}已检测到 netfilter-persistent，正在保存 iptables 配置…${RESET}"
                 netfilter-persistent save > /dev/null 2>&1
+                echo ""
+                echo -e "${GREEN}已成功保存端口跳跃配置…${RESET}"
             else
                 # 如果系统仅安装了 iptables 而未安装 nftables，则安装 iptables-persistent 来保存 iptables 配置
-                echo -e "${YELLOW}未检测到 netfilter-persistent，检查是否需要安装 iptables-persistent 或 netfilter-persistent…${RESET}"
+                echo ""
+                echo -e "${YELLOW}未检测到 netfilter-persistent。${RESET}"
                 if $has_iptables && ! $has_nftables; then
-                    echo -e "${BLUE}正在安装 iptables-persistent…${RESET}"
+                    echo ""
+                    echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 iptables-persistent 并保存配置…${RESET}"
                     apt-get update > /dev/null 2>&1
                     apt-get install -y iptables-persistent > /dev/null 2>&1
-                    echo -e "${GREEN}iptables-persistent 安装完成，正在保存 iptables 配置…${RESET}"
                     iptables-save > /etc/iptables/rules.v4 > /dev/null 2>&1
                     ip6tables-save > /etc/iptables/rules.v6 > /dev/null 2>&1
+                    echo ""
+                    echo -e "${GREEN}已通过 iptables-persistent 保存 iptables 配置！${RESET}"
                 elif $has_iptables && $has_nftables; then
                     # 如果系统同时安装了 iptables 和 nftables，则安装 netfilter-persistent 来保存 iptables 配置
-                    echo -e "${BLUE}系统检测到 iptables 和 nftables，安装 netfilter-persistent…${RESET}"
+                    echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 netfilter-persistent 并保存配置…${RESET}"
                     apt-get update > /dev/null 2>&1
                     apt-get install -y netfilter-persistent > /dev/null 2>&1
-                    echo -e "${GREEN}netfilter-persistent 安装完成，正在保存 iptables 配置…${RESET}"
                     netfilter-persistent save > /dev/null 2>&1
+                    echo ""
+                    echo -e "${GREEN}已成功通过 netfilter-persistent 保存端口跳跃配置！${RESET}"
                 else
                     # 其他情况，提示手动保存配置
                     echo -e "${RED}未检测到适合的防火墙工具/配置，请手动保存 iptables 配置。${RESET}"
@@ -1272,16 +1307,20 @@ set_port_hop() {
 
             # 5f. 保存 nftables 配置
             echo ""
-            echo -e "${BLUE}正在检测 netfilter-persistent 是否安装…${RESET}"
+            echo ""
+            echo -e "${BLUE}准备保存端口跳跃配置…${RESET}"
             if ! command -v netfilter-persistent > /dev/null; then
-                echo -e "${YELLOW}未检测到 netfilter-persistent，正在安装…${RESET}"
+                echo ""
+                echo -e "${YELLOW}根据当前系统配置，正在安装 netfilter-persistent 并保存配置…${RESET}"
                 apt-get update > /dev/null 2>&1
                 apt-get install -y netfilter-persistent > /dev/null 2>&1
-                echo -e "${GREEN}netfilter-persistent 安装完成，正在保存 nftables 配置…${RESET}"
                 netfilter-persistent save > /dev/null 2>&1
+                echo ""
+                echo -e "${GREEN}已成功通过 netfilter-persistent 保存端口跳跃配置！${RESET}"    
             else
-                echo -e "${GREEN}已检测到 netfilter-persistent，正在保存 nftables 配置…${RESET}"
                 netfilter-persistent save > /dev/null 2>&1
+                echo ""
+                echo -e "${GREEN}已成功保存端口跳跃配置！${RESET}"
             fi
             echo ""
             echo ""
@@ -1736,7 +1775,8 @@ uninstall_hysteria() {
                 ;;
             0)
                 # 返回主菜单
-                return
+                tput reset
+                return 0
                 ;;
             *)
                 # 无效输入，提示并重新读取输入
@@ -1802,8 +1842,8 @@ print_configuration() {
                 clear
                 echo -e "${BLUE}正在查询端口跳跃范围…${RESET}"
 
-                # 1. 使用 yq 工具从 /etc/hysteria/config.yaml 中提取 Hysteria 2 正在监听的端口号
-                config_port_number=$(yq e '.listen' /etc/hysteria/config.yaml | sed 's/://')
+                # 1. 使用 grep 工具从 /etc/hysteria/config.yaml 中提取 Hysteria 2 正在监听的端口号
+                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
 
                 # 2. 检测系统中是否存在 firewalld 防火墙
                 if command -v firewall-cmd > /dev/null; then
@@ -1978,13 +2018,13 @@ print_configuration() {
                 echo -e "${BLUE}正在查询自备域名…${RESET}"
 
                 # 2. 打印域名
-                config_domain=$(yq e '.domains[0]' /etc/hysteria/config.yaml)
+                config_domain=$(grep -m 1 'domains:' -A 1 /etc/hysteria/config.yaml | grep -Eo '^[[:space:]]*-[[:space:]]*[^[:space:]#]+' | sed 's/^[[:space:]]*-[[:space:]]*//')
                 if [ -n "$config_domain" ]; then
                     echo ""
                     echo -e "${CYAN}Hysteria 2 服务使用的自备配置域名为：${RESET}${config_domain}"
                 else
                     echo ""
-                    echo -e "${RED}域名查询失败！未能从配置文件中找到域名，这可能是您使用无域名方式搭建 Hysteria 2。${RESET}"
+                    echo -e "${RED}域名查询失败！未能从配置文件中找到域名，这可能是您使用无域名方式搭建 Hysteria 2，或者是 YAML 文件存在的语法等。${RESET}"
                 fi
                 
                 # 3.  提示返回上一级菜单
@@ -1998,7 +2038,7 @@ print_configuration() {
                 echo -e "${BLUE}正在查询密码…${RESET}"
 
                 # 2. 打印密码
-                config_passwd=$(yq e '.password' /etc/hysteria/config.yaml)
+                config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
                 if [ -n "$config_passwd" ]; then
                     echo ""
                     echo -e "${CYAN}Hysteria 2 配置的密码为：${RESET}${config_passwd}"
@@ -2018,9 +2058,12 @@ print_configuration() {
                 echo -e "${BLUE}正在查询证书和私钥保存路径…${RESET}"
 
                 # 2. 提取证书和密钥路径
-                cert_profile_path=$(yq e '.tls.cert' /etc/hysteria/config.yaml)
-                key_profile_path=$(yq e '.tls.key' /etc/hysteria/config.yaml)
 
+                # 提取证书路径，允许路径中包含空格，并且检查是否以 .crt 结尾
+                cert_profile_path=$(grep '^  cert:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*cert:[[:space:]]*//;s/[[:space:]]*#.*//' | grep -Eo '/[^[:space:]]+\.crt$')
+                # 提取密钥路径，允许路径中包含空格，并且检查是否以 .key 结尾
+                key_profile_path=$(grep '^  key:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*key:[[:space:]]*//;s/[[:space:]]*#.*//' | grep -Eo '/[^[:space:]]+\.key$')
+                
                 # 3. 打印路径
                 if [ -n "$cert_profile_path" ] && [ -n "$key_profile_path" ]; then
                     echo ""
@@ -2036,7 +2079,8 @@ print_configuration() {
                 ;;
             0)
                 # 返回主菜单
-                return
+                tput reset
+                return 0
                 ;;
             *)
                 # 无效输入，提示并重新读取输入
@@ -2259,7 +2303,8 @@ common_tools() {
                 ;;
             0)
                 # 返回主菜单
-                return
+                tput reset
+                return 0
                 ;;
             *)
                 # 无效输入，提示并重新读取输入
