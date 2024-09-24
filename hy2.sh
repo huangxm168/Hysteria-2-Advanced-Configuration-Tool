@@ -4,7 +4,7 @@
 clear
 
 # 颜色定义
-GREEN="\e[32m"
+GREEN="\033[38;2;25;248;32m"
 RED="\e[31m"
 YELLOW="\033[38;2;248;255;95m"
 BLUE="\e[34m"
@@ -878,6 +878,7 @@ start_hysteria_service() {
                 for attempt in $(seq 1 $max_attempts); do
                     if check_hysteria_status; then
                         echo ""
+                        echo ""
                         echo -e "${GREEN}Hysteria 2 服务已成功启动并运行！${RESET}"
                         break
                     else
@@ -1107,6 +1108,7 @@ set_port_hop() {
 
     while true; do
         echo ""
+        echo ""
         read -p "$(echo -e "请输入希望设置的端口跳跃功能终止端口（按下回车键使用默认 60000 端口）: ")" user_end_port
         user_end_port=${user_end_port:-60000}
         if [[ "$user_end_port" =~ ^[0-9]+$ ]] && [ "$user_end_port" -ge 1 ] && [ "$user_end_port" -le 65535 ]; then
@@ -1176,6 +1178,7 @@ set_port_hop() {
             echo ""
             echo ""
             echo -e "${BLUE}准备根据您的防火墙配置来设置端口跳跃功能…${RESET}"
+            echo ""
 
             # 4a. 配置允许本地访问
             echo ""
@@ -1244,13 +1247,12 @@ set_port_hop() {
                 echo -e "${YELLOW}未检测到 netfilter-persistent。${RESET}"
                 if $has_iptables && ! $has_nftables; then
                     echo ""
-                    echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 iptables-persistent 并保存配置…${RESET}"
+                    echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 netfilter-persistent 并保存配置…${RESET}"
                     apt-get update > /dev/null 2>&1
-                    apt-get install -y iptables-persistent > /dev/null 2>&1
-                    iptables-save > /etc/iptables/rules.v4 > /dev/null 2>&1
-                    ip6tables-save > /etc/iptables/rules.v6 > /dev/null 2>&1
+                    apt-get install -y netfilter-persistent > /dev/null 2>&1
+                    netfilter-persistent save > /dev/null 2>&1
                     echo ""
-                    echo -e "${GREEN}已通过 iptables-persistent 保存 iptables 配置！${RESET}"
+                    echo -e "${GREEN}已成功通过 netfilter-persistent 保存端口跳跃配置！${RESET}"
                 elif $has_iptables && $has_nftables; then
                     # 如果系统同时安装了 iptables 和 nftables，则安装 netfilter-persistent 来保存 iptables 配置
                     echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 netfilter-persistent 并保存配置…${RESET}"
