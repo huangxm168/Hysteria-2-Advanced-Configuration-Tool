@@ -2,7 +2,7 @@
 
 ## 一键命令
 
-    bash <(curl -Ls HY2.Hysteria.sh)
+    bash <(curl -Ls Hysteria.sh)
 > 提示：您需要在 root 用户下或以 sudo 权限运行
 
 ## 概述
