@@ -1794,8 +1794,11 @@ print_configuration() {
         echo -e "${ORANGE}请输入相应数字来选择您要打印的配置：${RESET}"
         echo ""
         echo ""
-        echo -e "${GREEN}   1. Hysteria 2 服务监听的端口号${RESET}"
-        echo -e "${GREEN}   2. 端口跳跃范围${RESET}"
+        echo -e "${GREEN}   1.  一键打印客户端所需配置参数${RESET}"
+        echo ""
+        echo ""        
+        echo -e "${GREEN}   2. Hysteria 2 服务监听的端口号${RESET}"
+        # echo -e "${GREEN}   2. 端口跳跃范围${RESET}"
         echo -e "${GREEN}   3. 域名${RESET}"
         echo -e "${GREEN}   4. 密码${RESET}"
         echo -e "${GREEN}   5. 证书和私钥保存路径${RESET}"
@@ -1808,6 +1811,47 @@ print_configuration() {
 
         case "$print_choice" in
             1)
+                # 一键打印客户端所需配置参数
+
+                # 1. 清屏
+                clear
+                echo -e "${BLUE}正在查询客户端配置所需的端口号、域名、密码…${RESET}"
+                echo ""
+
+                # 2. 打印端口号           
+                config_port_number=$(grep "listen" /etc/hysteria/config.yaml | awk '{print $2}' | sed 's/://')
+                if [ -n "$config_port_number" ]; then
+                    echo ""
+                    echo -e "${CYAN}Hysteria 2 服务监听的端口号为：${RESET}${config_port_number}"
+                else
+                    echo ""
+                    echo -e "${RED}端口号查询失败！未能从配置文件中找到端口号。${RESET}"
+                fi
+
+                # 3. 打印域名
+                config_domain=$(grep -m 1 'domains:' -A 1 /etc/hysteria/config.yaml | grep -Eo '^[[:space:]]*-[[:space:]]*[^[:space:]#]+' | sed 's/^[[:space:]]*-[[:space:]]*//')
+                if [ -n "$config_domain" ]; then
+                    echo ""
+                    echo -e "${CYAN}Hysteria 2 服务使用的自备配置域名为：${RESET}${config_domain}"
+                else
+                    echo ""
+                    echo -e "${RED}域名查询失败！未能从配置文件中找到域名，这可能是您使用无域名方式搭建 Hysteria 2，或者是 YAML 文件存在的语法等。${RESET}"
+                fi
+                
+                # 4. 打印密码
+                config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
+                if [ -n "$config_passwd" ]; then
+                    echo ""
+                    echo -e "${CYAN}Hysteria 2 服务配置的密码为：${RESET}${config_passwd}"
+                else
+                    echo ""
+                    echo -e "${RED}密码查询失败！未能从配置文件中找到密码。${RESET}"
+                fi
+
+                # 5.  提示返回上一级菜单
+                return_to_sub_menu
+                ;;
+            2)
                 # 打印 Hysteria 2 服务监听的端口号
                 
                 # 1. 清屏
@@ -1823,185 +1867,185 @@ print_configuration() {
                     echo ""
                     echo -e "${RED}端口号查询失败！未能从配置文件中找到端口号。${RESET}"
                 fi
-                
+
                 # 3.  提示返回上一级菜单
                 return_to_sub_menu
                 ;;
-            2)
-                # 打印端口跳跃范围
+            # 2)
+            #     # 打印端口跳跃范围
 
-                # 清屏
-                clear
-                echo -e "${BLUE}正在查询端口跳跃范围…${RESET}"
+            #     # 清屏
+            #     clear
+            #     echo -e "${BLUE}正在查询端口跳跃范围…${RESET}"
 
-                # 1. 使用 grep 工具从 /etc/hysteria/config.yaml 中提取 Hysteria 2 正在监听的端口号
-                config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
+            #     # 1. 使用 grep 工具从 /etc/hysteria/config.yaml 中提取 Hysteria 2 正在监听的端口号
+            #     config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
 
-                # 2. 检测系统中是否存在 firewalld 防火墙
-                if command -v firewall-cmd > /dev/null; then
-                    # 2-1. 查询 firewalld 防火墙配置
-                    firewall_output=$(firewall-cmd --zone=public --list-forward-ports 2>/dev/null)
-                    if echo "$firewall_output" | grep -q "$config_port_number"; then
-                        firewalld_start_port=$(echo "$firewall_output" | grep "$config_port_number" | awk '{print $3}')
-                        firewalld_end_port=$(echo "$firewall_output" | grep "$config_port_number" | awk '{print $5}')
-                        echo ""
-                        echo -e "${CYAN}通过 firewalld 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${firewalld_start_port} 到 ${firewalld_end_port}。${RESET}"
-                    else
-                        echo ""
-                        echo -e "${RED}端口跳跃范围查询失败！firewalld 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
-                    fi
-                fi
+            #     # 2. 检测系统中是否存在 firewalld 防火墙
+            #     if command -v firewall-cmd > /dev/null; then
+            #         # 2-1. 查询 firewalld 防火墙配置
+            #         firewall_output=$(firewall-cmd --zone=public --list-forward-ports 2>/dev/null)
+            #         if echo "$firewall_output" | grep -q "$config_port_number"; then
+            #             firewalld_start_port=$(echo "$firewall_output" | grep "$config_port_number" | awk '{print $3}')
+            #             firewalld_end_port=$(echo "$firewall_output" | grep "$config_port_number" | awk '{print $5}')
+            #             echo ""
+            #             echo -e "${CYAN}通过 firewalld 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${firewalld_start_port} 到 ${firewalld_end_port}。${RESET}"
+            #         else
+            #             echo ""
+            #             echo -e "${RED}端口跳跃范围查询失败！firewalld 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+            #         fi
+            #     fi
 
-                # 3. 检测系统中是否存在 iptables 防火墙
-                if command -v iptables > /dev/null; then
-                    # 3-1. 查询 iptables 防火墙配置
-                    iptables_output=$(iptables -t nat -nL --line 2>/dev/null)
-                    ip4tables_start_port=""
-                    ip4tables_end_port=""
+            #     # 3. 检测系统中是否存在 iptables 防火墙
+            #     if command -v iptables > /dev/null; then
+            #         # 3-1. 查询 iptables 防火墙配置
+            #         iptables_output=$(iptables -t nat -nL --line 2>/dev/null)
+            #         ip4tables_start_port=""
+            #         ip4tables_end_port=""
 
-                    # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
-                    matched_line=$(echo "$iptables_output" | grep "$config_port_number")
-                    if [ -n "$matched_line" ]; then
-                        # 精确提取端口范围的处理
-                        port_range=$(echo "$matched_line" | grep -oP '(?<=dpt:)\d+(-\d+)?')
-                        if [[ "$port_range" =~ "-" ]]; then
-                            # 提取起始端口和终止端口
-                            ip4tables_start_port=$(echo "$port_range" | cut -d'-' -f1)
-                            ip4tables_end_port=$(echo "$port_range" | cut -d'-' -f2)
-                        else
-                            # 只有单个端口的情况
-                            ip4tables_start_port=$port_range
-                            ip4tables_end_port=$port_range
-                        fi
-                    else
-                        # 3-1-2. 检查 ip6tables 配置
-                        ip6tables_output=$(ip6tables -t nat -nL --line 2>/dev/null)
-                        ip6tables_start_port=""
-                        ip6tables_end_port=""
+            #         # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
+            #         matched_line=$(echo "$iptables_output" | grep "$config_port_number")
+            #         if [ -n "$matched_line" ]; then
+            #             # 精确提取端口范围的处理
+            #             port_range=$(echo "$matched_line" | grep -oP '(?<=dpt:)\d+(-\d+)?')
+            #             if [[ "$port_range" =~ "-" ]]; then
+            #                 # 提取起始端口和终止端口
+            #                 ip4tables_start_port=$(echo "$port_range" | cut -d'-' -f1)
+            #                 ip4tables_end_port=$(echo "$port_range" | cut -d'-' -f2)
+            #             else
+            #                 # 只有单个端口的情况
+            #                 ip4tables_start_port=$port_range
+            #                 ip4tables_end_port=$port_range
+            #             fi
+            #         else
+            #             # 3-1-2. 检查 ip6tables 配置
+            #             ip6tables_output=$(ip6tables -t nat -nL --line 2>/dev/null)
+            #             ip6tables_start_port=""
+            #             ip6tables_end_port=""
 
-                        # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
-                        matched_line6=$(echo "$ip6tables_output" | grep "$config_port_number")
-                        if [ -n "$matched_line6" ]; then
-                            # 精确提取端口范围的处理
-                            port_range6=$(echo "$matched_line6" | grep -oP '(?<=dpt:)\d+(-\d+)?')
-                            if [[ "$port_range6" =~ "-" ]]; then
-                                # 提取起始端口和终止端口
-                                ip6tables_start_port=$(echo "$port_range6" | cut -d'-' -f1)
-                                ip6tables_end_port=$(echo "$port_range6" | cut -d'-' -f2)
-                            else
-                                # 只有单个端口的情况
-                                ip6tables_start_port=$port_range6
-                                ip6tables_end_port=$port_range6
-                            fi
-                        else
-                            # 检测是否存在 nftables 防火墙
-                            if command -v nft > /dev/null; then
-                                nft_output=$(nft list ruleset 2>/dev/null)
-                                nftables_start_port=""
-                                nftables_end_port=""
+            #             # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
+            #             matched_line6=$(echo "$ip6tables_output" | grep "$config_port_number")
+            #             if [ -n "$matched_line6" ]; then
+            #                 # 精确提取端口范围的处理
+            #                 port_range6=$(echo "$matched_line6" | grep -oP '(?<=dpt:)\d+(-\d+)?')
+            #                 if [[ "$port_range6" =~ "-" ]]; then
+            #                     # 提取起始端口和终止端口
+            #                     ip6tables_start_port=$(echo "$port_range6" | cut -d'-' -f1)
+            #                     ip6tables_end_port=$(echo "$port_range6" | cut -d'-' -f2)
+            #                 else
+            #                     # 只有单个端口的情况
+            #                     ip6tables_start_port=$port_range6
+            #                     ip6tables_end_port=$port_range6
+            #                 fi
+            #             else
+            #                 # 检测是否存在 nftables 防火墙
+            #                 if command -v nft > /dev/null; then
+            #                     nft_output=$(nft list ruleset 2>/dev/null)
+            #                     nftables_start_port=""
+            #                     nftables_end_port=""
 
-                                # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
-                                matched_line_nft=$(echo "$nft_output" | grep "$config_port_number")
-                                if [ -n "$matched_line_nft" ]; then
-                                    # 提取匹配行中的端口范围
-                                    nft_port_range=$(echo "$matched_line_nft" | grep -oP 'dport \d+(-\d+)?' | grep -oP '\d+(-\d+)?')
-                                    if [[ "$nft_port_range" =~ "-" ]]; then
-                                        # 提取起始端口和终止端口
-                                        nftables_start_port=$(echo "$nft_port_range" | cut -d'-' -f1)
-                                        nftables_end_port=$(echo "$nft_port_range" | cut -d'-' -f2)
-                                    else
-                                        # 只有单个端口的情况
-                                        nftables_start_port=$nft_port_range
-                                        nftables_end_port=$nft_port_range
-                                    fi
-                                    echo ""
-                                    echo -e "${CYAN}通过 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${nftables_start_port} 到 ${nftables_end_port}。${RESET}"
-                                else
-                                    echo ""
-                                    echo -e "${RED}端口跳跃范围查询失败！nftables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
-                                fi
-                            else
-                                echo ""
-                                echo -e "${RED}端口跳跃范围查询失败！iptables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
-                            fi
-                        fi
-                    fi
-                fi
+            #                     # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
+            #                     matched_line_nft=$(echo "$nft_output" | grep "$config_port_number")
+            #                     if [ -n "$matched_line_nft" ]; then
+            #                         # 提取匹配行中的端口范围
+            #                         nft_port_range=$(echo "$matched_line_nft" | grep -oP 'dport \d+(-\d+)?' | grep -oP '\d+(-\d+)?')
+            #                         if [[ "$nft_port_range" =~ "-" ]]; then
+            #                             # 提取起始端口和终止端口
+            #                             nftables_start_port=$(echo "$nft_port_range" | cut -d'-' -f1)
+            #                             nftables_end_port=$(echo "$nft_port_range" | cut -d'-' -f2)
+            #                         else
+            #                             # 只有单个端口的情况
+            #                             nftables_start_port=$nft_port_range
+            #                             nftables_end_port=$nft_port_range
+            #                         fi
+            #                         echo ""
+            #                         echo -e "${CYAN}通过 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${nftables_start_port} 到 ${nftables_end_port}。${RESET}"
+            #                     else
+            #                         echo ""
+            #                         echo -e "${RED}端口跳跃范围查询失败！nftables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+            #                     fi
+            #                 else
+            #                     echo ""
+            #                     echo -e "${RED}端口跳跃范围查询失败！iptables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+            #                 fi
+            #             fi
+            #         fi
+            #     fi
 
-                # 4. 检测系统中是否存在 nftables 防火墙
-                if command -v nft > /dev/null; then
-                    # 4-1. 查询 nftables 防火墙配置
-                    nft_output=$(nft list ruleset 2>/dev/null)
-                    nftables_start_port=""
-                    nftables_end_port=""
+            #     # 4. 检测系统中是否存在 nftables 防火墙
+            #     if command -v nft > /dev/null; then
+            #         # 4-1. 查询 nftables 防火墙配置
+            #         nft_output=$(nft list ruleset 2>/dev/null)
+            #         nftables_start_port=""
+            #         nftables_end_port=""
 
-                    # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
-                    matched_line_nft=$(echo "$nft_output" | grep "$config_port_number")
-                    if [ -n "$matched_line_nft" ]; then
-                        # 提取匹配行中的端口范围
-                        nft_port_range=$(echo "$matched_line_nft" | grep -oP 'dport \d+(-\d+)?' | grep -oP '\d+(-\d+)?')
-                        if [[ "$nft_port_range" =~ "-" ]]; then
-                            # 提取起始端口和终止端口
-                            nftables_start_port=$(echo "$nft_port_range" | cut -d'-' -f1)
-                            nftables_end_port=$(echo "$nft_port_range" | cut -d'-' -f2)
-                        else
-                            # 只有单个端口的情况
-                            nftables_start_port=$nft_port_range
-                            nftables_end_port=$nft_port_range
-                        fi
-                    fi
-                fi
-                # 5. 确认 $ip4tables_start_port 和 $ip6tables_start_port 的存在情况
-                if [ -n "$ip4tables_start_port" ]; then
-                    # 只要 $ip4tables_start_port 存在，就将 $iptables_start_port 设为 $ip4tables_start_port
-                    iptables_start_port=$ip4tables_start_port
-                elif [ -z "$ip4tables_start_port" ] && [ -n "$ip6tables_start_port" ]; then
-                    # 仅当 $ip4tables_start_port 不存在且 $ip6tables_start_port 存在时，才将 $iptables_start_port 设为 $ip6tables_start_port
-                    iptables_start_port=$ip6tables_start_port
-                else
-                    # 如果两个变量都没有值，将 $iptables_start_port 设为 "undefined"
-                    iptables_start_port="undefined"
-                fi
+            #         # 从查询结果中查找匹配 $config_port_number 的行，并提取起始端口和终止端口
+            #         matched_line_nft=$(echo "$nft_output" | grep "$config_port_number")
+            #         if [ -n "$matched_line_nft" ]; then
+            #             # 提取匹配行中的端口范围
+            #             nft_port_range=$(echo "$matched_line_nft" | grep -oP 'dport \d+(-\d+)?' | grep -oP '\d+(-\d+)?')
+            #             if [[ "$nft_port_range" =~ "-" ]]; then
+            #                 # 提取起始端口和终止端口
+            #                 nftables_start_port=$(echo "$nft_port_range" | cut -d'-' -f1)
+            #                 nftables_end_port=$(echo "$nft_port_range" | cut -d'-' -f2)
+            #             else
+            #                 # 只有单个端口的情况
+            #                 nftables_start_port=$nft_port_range
+            #                 nftables_end_port=$nft_port_range
+            #             fi
+            #         fi
+            #     fi
+            #     # 5. 确认 $ip4tables_start_port 和 $ip6tables_start_port 的存在情况
+            #     if [ -n "$ip4tables_start_port" ]; then
+            #         # 只要 $ip4tables_start_port 存在，就将 $iptables_start_port 设为 $ip4tables_start_port
+            #         iptables_start_port=$ip4tables_start_port
+            #     elif [ -z "$ip4tables_start_port" ] && [ -n "$ip6tables_start_port" ]; then
+            #         # 仅当 $ip4tables_start_port 不存在且 $ip6tables_start_port 存在时，才将 $iptables_start_port 设为 $ip6tables_start_port
+            #         iptables_start_port=$ip6tables_start_port
+            #     else
+            #         # 如果两个变量都没有值，将 $iptables_start_port 设为 "undefined"
+            #         iptables_start_port="undefined"
+            #     fi
 
-                # 6. 确认 $ip4tables_end_port 和 $ip6tables_end_port 的存在情况
-                if [ -n "$ip4tables_end_port" ]; then
-                    # 只要 $ip4tables_end_port 存在，无论 $ip6tables_end_port 是否存在，都将 $iptables_end_port 设为 $ip4tables_end_port
-                    iptables_end_port=$ip4tables_end_port
-                elif [ -z "$ip4tables_end_port" ] && [ -n "$ip6tables_end_port" ]; then
-                    # 仅当 $ip4tables_end_port 不存在且 $ip6tables_end_port 存在时，才将 $iptables_end_port 设为 $ip6tables_end_port
-                    iptables_end_port=$ip6tables_end_port
-                else
-                    # 如果两个变量都没有值，将 $iptables_end_port 设为 "undefined"
-                    iptables_end_port="undefined"
-                fi
+            #     # 6. 确认 $ip4tables_end_port 和 $ip6tables_end_port 的存在情况
+            #     if [ -n "$ip4tables_end_port" ]; then
+            #         # 只要 $ip4tables_end_port 存在，无论 $ip6tables_end_port 是否存在，都将 $iptables_end_port 设为 $ip4tables_end_port
+            #         iptables_end_port=$ip4tables_end_port
+            #     elif [ -z "$ip4tables_end_port" ] && [ -n "$ip6tables_end_port" ]; then
+            #         # 仅当 $ip4tables_end_port 不存在且 $ip6tables_end_port 存在时，才将 $iptables_end_port 设为 $ip6tables_end_port
+            #         iptables_end_port=$ip6tables_end_port
+            #     else
+            #         # 如果两个变量都没有值，将 $iptables_end_port 设为 "undefined"
+            #         iptables_end_port="undefined"
+            #     fi
 
-                # 7. 确认 $iptables_start_port 和 $nftables_start_port 的存在情况
-                if [ "$iptables_start_port" != "undefined" ] && [ "$nftables_start_port" == "undefined" ]; then
-                    # 仅当 $iptables_start_port 存在且 $nftables_start_port 不存在时
-                    echo ""
-                    echo -e "${CYAN}通过 iptables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
+            #     # 7. 确认 $iptables_start_port 和 $nftables_start_port 的存在情况
+            #     if [ "$iptables_start_port" != "undefined" ] && [ "$nftables_start_port" == "undefined" ]; then
+            #         # 仅当 $iptables_start_port 存在且 $nftables_start_port 不存在时
+            #         echo ""
+            #         echo -e "${CYAN}通过 iptables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
 
-                elif [ "$iptables_start_port" != "undefined" ] && [ "$nftables_start_port" != "undefined" ]; then
-                    # 当 $iptables_start_port 和 $nftables_start_port 都存在时
-                    if [ "$iptables_start_port" == "$nftables_start_port" ] && [ "$iptables_end_port" == "$nftables_end_port" ]; then
-                        # 当两个防火墙的起始端口和终止端口都一致时
-                        echo ""
-                        echo -e "${CYAN}通过 iptables 和 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
-                    else
-                        # 当两个防火墙的起始端口和终止端口不一致时
-                        echo ""
-                        echo -e "${CYAN}通过 iptables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
-                        echo -e "${CYAN}通过 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${nftables_start_port} 到 ${nftables_end_port}。${RESET}"
-                    fi
-                else
-                    # 当 $iptables_start_port 和 $nftables_start_port 都不存在时
-                    echo ""
-                    echo -e "${RED}端口跳跃范围查询失败！iptables 和 nftables 防火墙配置中均没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
-                fi
+            #     elif [ "$iptables_start_port" != "undefined" ] && [ "$nftables_start_port" != "undefined" ]; then
+            #         # 当 $iptables_start_port 和 $nftables_start_port 都存在时
+            #         if [ "$iptables_start_port" == "$nftables_start_port" ] && [ "$iptables_end_port" == "$nftables_end_port" ]; then
+            #             # 当两个防火墙的起始端口和终止端口都一致时
+            #             echo ""
+            #             echo -e "${CYAN}通过 iptables 和 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
+            #         else
+            #             # 当两个防火墙的起始端口和终止端口不一致时
+            #             echo ""
+            #             echo -e "${CYAN}通过 iptables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${iptables_start_port} 到 ${iptables_end_port}。${RESET}"
+            #             echo -e "${CYAN}通过 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${nftables_start_port} 到 ${nftables_end_port}。${RESET}"
+            #         fi
+            #     else
+            #         # 当 $iptables_start_port 和 $nftables_start_port 都不存在时
+            #         echo ""
+            #         echo -e "${RED}端口跳跃范围查询失败！iptables 和 nftables 防火墙配置中均没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+            #     fi
 
-                # 8. 提示返回上一级菜单
-                return_to_sub_menu
-                ;;
+            #     # 8. 提示返回上一级菜单
+            #     return_to_sub_menu
+            #     ;;
             3)
                 # 打印域名
 
@@ -2033,7 +2077,7 @@ print_configuration() {
                 config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
                 if [ -n "$config_passwd" ]; then
                     echo ""
-                    echo -e "${CYAN}Hysteria 2 配置的密码为：${RESET}${config_passwd}"
+                    echo -e "${CYAN}Hysteria 2 服务配置的密码为：${RESET}${config_passwd}"
                 else
                     echo ""
                     echo -e "${RED}密码查询失败！未能从配置文件中找到密码。${RESET}"
