@@ -4,9 +4,9 @@
 clear
 
 # 颜色定义
-GREEN="\033[38;2;25;248;32m"
-RED="\e[31m"
-YELLOW="\033[38;2;248;255;95m"
+GREEN="\033[38;2;91;194;75m"
+RED="\033[38;2;217;61;48m"
+YELLOW="\033[38;2;251;230;77m"
 BLUE="\e[34m"
 CYAN="\033[38;2;32;255;218m"     # 青色
 MAGENTA="\033[38;2;255;32;140m"  # 洋红色
@@ -59,26 +59,10 @@ function return_to_sub_menu() {
     while true; do
         echo ""
         echo ""
-        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice
+        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ")" return_to_sub_choice
         if [ "$return_to_sub_choice" == "0" ]; then
             tput reset
             return
-        else
-            echo ""
-            echo -e "${RED}输入有误！${RESET}"
-            echo ""
-        fi
-    done
-}
-
-# 返回上一级菜单的提示函数 2
-function return_to_sub_menu2() {
-    while true; do
-        echo ""
-        echo ""
-        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ${RESET}")" return_to_sub_choice2
-        if [ "$return_to_sub_choice2" == "0" ]; then
-            break 2
         else
             echo ""
             echo -e "${RED}输入有误！${RESET}"
@@ -93,7 +77,7 @@ while true; do
     echo ""
     echo ""
     echo ""
-    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ${RESET}")" return_to_main_choice
+    read -p "$(echo -e "${ORANGE}请输入数字 0 来返回主菜单: ")" return_to_main_choice
     if [ "$return_to_main_choice" == "0" ]; then
         tput reset
         return 0
@@ -1267,6 +1251,7 @@ set_port_hop() {
                 fi
             fi
             echo ""
+            echo ""
             echo -e "${GREEN}已成功设置端口跳跃功能！${RESET}"
 
             # 4h. 提示返回主菜单
@@ -1422,10 +1407,11 @@ set_buffer_size() {
 
     # 3. 输出 OpenWrt 等应用的相关配置提示
     echo ""
-    echo -e "请在 OpenWrt 等应用内对应配置以下内容："
     echo ""
-    echo -e "QUIC 流接收窗口：26843545"
-    echo -e "QUIC 连接接收窗口：67108864"
+    echo -e "${ORANGE}请在 OpenWrt 等应用内对应配置以下内容："
+    echo ""
+    echo -e "${CYAN}QUIC 流接收窗口：${RESET}26843545"
+    echo -e "${CYAN}QUIC 连接接收窗口：${RESET}67108864"
 
     # 4. 提示返回主菜单
     return_to_main_menu
@@ -2127,7 +2113,7 @@ common_tools() {
                 clear
 
                 # 2. 域名解析检测
-                read -p "$(echo -e "请输入您要检测的域名: ")" domain
+                read -p "$(echo -e "${RESET}请输入您要检测的域名: ")" domain
 
                 # 首次检测方案：nslookup
                 domain_ip=$(nslookup "$domain" | awk '/^Address: / { print $2 }' | grep -v "#")
@@ -2148,15 +2134,15 @@ common_tools() {
                     echo -e "检测失败！该域名没有配置 A 记录或解析失败，请检查域名配置。"
                 else
                     echo ""
-                    echo -e "您查询的域名解析 IP 为: $domain_ip"
-                    echo -e "当前服务器 IP 为: $server_ip"
+                    echo -e "${CYAN}您查询的域名解析 IP 为: ${RESET}$domain_ip"
+                    echo -e "${CYAN}当前服务器 IP 为: ${RESET}$server_ip"
                     
                     if [ "$domain_ip" == "$server_ip" ]; then
                         echo ""
-                        echo -e "您查询的域名已解析到本服务器 IP。"
+                        echo -e "${GREEN}您查询的域名已解析到本服务器 IP。${RESET}"
                     else
                         echo ""
-                        echo -e "您查询的域名尚未解析到本服务器 IP，请等待 DNS 传播后再试，或前往域名管理面板确认。"
+                        echo -e "${YELLOW}您查询的域名尚未解析到本服务器 IP，请等待 DNS 传播后再试，或前往域名管理面板确认。${RESET}"
                     fi
                 fi
 
@@ -2178,15 +2164,15 @@ common_tools() {
 
                 # 2. 端口占用检测
                 while true; do
-                    read -p "$(echo -e "请输入您要检测的端口号 (1-65535): ")" port_number
+                    read -p "$(echo -e "${RESET}请输入您要检测的端口号 (1-65535): ${RESET}")" port_number
                     if validate_port "$port_number"; then
                         if ss -lntu | grep -q ":$port_number "; then
                             service=$(ss -lntu | grep ":$port_number " | awk '{print $1}')
                             echo ""
-                            echo -e "您查询的端口号正在被 $service 监听中!"
+                            echo -e "${YELLOW}您查询的端口号正在被 $service 监听中!${RESET}"
                         else
                             echo ""
-                            echo -e "您查询的端口号没有被占用！"
+                            echo -e "${GREEN}您查询的端口号没有被占用！${RESET}"
                         fi
                         break  # 跳出循环，结束端口号输入
                     else
@@ -2203,7 +2189,7 @@ common_tools() {
                 clear
 
                 # 2. 检测防火墙安装状态
-                echo -e "正在检测当前系统使用的防火墙…"
+                echo -e "${BLUE}正在检测当前系统使用的防火墙…${RESET}"
                 iptables_installed=$(dpkg -l | grep iptables)
                 nftables_installed=$(dpkg -l | grep nftables)
                 firewalld_installed=$(dpkg -l | grep firewalld)
@@ -2212,41 +2198,41 @@ common_tools() {
                 # 输出检测到的防火墙状态
                 if [ -n "$iptables_installed" ]; then
                     echo ""
-                    echo -e "已检测到 iptables 防火墙。"
+                    echo -e "${RESET}已检测到 iptables 防火墙。${RESET}"
                 fi
 
                 if [ -n "$nftables_installed" ]; then
                     echo ""
-                    echo -e "已检测到 nftables 防火墙。"
+                    echo -e "${RESET}已检测到 nftables 防火墙。${RESET}"
                 fi
 
                 if [ -n "$firewalld_installed" ]; then
                     echo ""
-                    echo -e "已检测到 firewalld 防火墙。"
+                    echo -e "${RESET}已检测到 firewalld 防火墙。${RESET}"
                 fi
 
                 # 打印防火墙配置
                 if [ -n "$nftables_installed" ] && [ -z "$iptables_installed" ]; then
                     echo ""
-                    echo -e "准备打印防火墙配置…"
+                    echo -e "${BLUE}准备打印防火墙配置…${RESET}"
                     echo ""
-                    echo -e "nftables 防火墙配置如下："
+                    echo -e "${CYAN}nftables 防火墙配置如下：${RESET}"
                     echo ""
                     nft list ruleset
                     return_to_sub_menu
                 elif [ -n "$firewalld_installed" ]; then
                     echo ""
-                    echo -e "准备打印防火墙配置…"
+                    echo -e "${BLUE}准备打印防火墙配置…${RESET}"
                     echo ""
-                    echo -e "firewalld 防火墙配置如下："
+                    echo -e "${CYAN}firewalld 防火墙配置如下：${RESET}"
                     echo ""
                     firewall-cmd --list-all
                     return_to_sub_menu
                 elif [ -n "$iptables_installed" ] && [ -z "$nftables_installed" ]; then
                     echo ""
-                    echo -e "准备打印防火墙配置…"
+                    echo -e "${BLUE}准备打印防火墙配置…${RESET}"
                     echo ""
-                    echo -e "iptables 防火墙配置如下："
+                    echo -e "${CYAN}iptables 防火墙配置如下：${RESET}"
                     echo ""
                     iptables -L
                     return_to_sub_menu
@@ -2254,38 +2240,39 @@ common_tools() {
                     # 同时检测到 iptables 和 nftables，用户选择操作
                     while true; do
                         echo ""
-                        echo -e "请选择您要进行的操作："
+                        echo -e "${ORANGE}请选择您要进行的操作：${RESET}"
                         echo ""
-                        echo -e "  1. 打印 iptables 防火墙配置"
-                        echo -e "  2. 打印 nftables 防火墙配置"
+                        echo -e "${GREEN}  1. 打印 iptables 防火墙配置"
+                        echo -e "${GREEN}  2. 打印 nftables 防火墙配置"
                         echo ""
-                        echo -e "  0. 返回上一级菜单"
+                        echo -e "${YELLOW}  0. 返回上一级菜单"
                         echo ""
-                        read -p "$(echo -e "请输入您的选择: [1/2/0]")" user_choice
+                        read -p "$(echo -e "${RESET}请输入您的选择: [1/2/0]${RESET}")" user_choice
 
                         case $user_choice in
                             1)
                                 echo ""
-                                echo -e "准备打印防火墙配置："
+                                echo -e "${BLUE}准备打印防火墙配置：${RESET}"
                                 sleep 1
                                 echo ""
-                                echo -e "iptables 防火墙配置如下："
+                                echo -e "${CYAN}iptables 防火墙配置如下：${RESET}"
                                 echo ""
                                 iptables -L
                                 return_to_sub_menu
                                 ;;
                             2)
                                 echo ""
-                                echo -e "准备打印防火墙配置："
+                                echo -e "${BLUE}准备打印防火墙配置：${RESET}"
                                 sleep 1
                                 echo ""
-                                echo -e "nftables 防火墙配置如下："
+                                echo -e "${CYAN}nftables 防火墙配置如下：${RESET}"
                                 echo ""
                                 nft list ruleset
                                 return_to_sub_menu
                                 ;;
                             0)
-                                return_to_sub_menu
+                                tput reset
+                                return
                                 ;;
                             *)
                                 echo ""
@@ -2297,9 +2284,9 @@ common_tools() {
                     done
                 else
                     echo ""
-                    echo -e "未在当前系统检测到防火墙工具/配置！"
+                    echo -e "${YELLOW}未在当前系统检测到防火墙工具/配置！${RESET}"
                     echo ""
-                    echo -e "即将中止打印流程…"
+                    echo -e "${MAGENTA}即将中止打印流程…${RESET}"
                     echo ""
                     return_to_sub_menu
                 fi
