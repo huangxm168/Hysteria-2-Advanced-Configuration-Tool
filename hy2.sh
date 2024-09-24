@@ -1848,14 +1848,14 @@ print_configuration() {
                         echo -e "${CYAN}通过 firewalld 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${firewalld_start_port} 到 ${firewalld_end_port}。${RESET}"
                     else
                         echo ""
-                        echo -e "${RED}端口转发范围查询失败！firewalld 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+                        echo -e "${RED}端口跳跃范围查询失败！firewalld 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
                     fi
                 fi
 
                 # 3. 检测系统中是否存在 iptables 防火墙
                 if command -v iptables > /dev/null; then
                     # 3-1. 查询 iptables 防火墙配置
-                    iptables_output=$(iptables -t nat -L PREROUTING -v -n 2>/dev/null)
+                    iptables_output=$(iptables -t nat -nL --line 2>/dev/null)
                     ip4tables_start_port=""
                     ip4tables_end_port=""
 
@@ -1875,7 +1875,7 @@ print_configuration() {
                         fi
                     else
                         # 3-1-2. 检查 ip6tables 配置
-                        ip6tables_output=$(ip6tables -t nat -L PREROUTING -v -n 2>/dev/null)
+                        ip6tables_output=$(ip6tables -t nat -nL --line 2>/dev/null)
                         ip6tables_start_port=""
                         ip6tables_end_port=""
 
@@ -1918,11 +1918,11 @@ print_configuration() {
                                     echo -e "${CYAN}通过 nftables 防火墙查询到 Hysteria 2 服务的端口转发范围为 ${nftables_start_port} 到 ${nftables_end_port}。${RESET}"
                                 else
                                     echo ""
-                                    echo -e "${RED}端口转发范围查询失败！nftables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+                                    echo -e "${RED}端口跳跃范围查询失败！nftables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
                                 fi
                             else
                                 echo ""
-                                echo -e "${RED}端口转发范围查询失败！iptables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+                                echo -e "${RED}端口跳跃范围查询失败！iptables 防火墙配置中没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
                             fi
                         fi
                     fi
@@ -1996,7 +1996,7 @@ print_configuration() {
                 else
                     # 当 $iptables_start_port 和 $nftables_start_port 都不存在时
                     echo ""
-                    echo -e "${RED}端口转发范围查询失败！iptables 和 nftables 防火墙配置中均没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
+                    echo -e "${RED}端口跳跃范围查询失败！iptables 和 nftables 防火墙配置中均没有和 Hysteria 2 服务监听端口相关的端口转发配置。${RESET}"
                 fi
 
                 # 8. 提示返回上一级菜单
