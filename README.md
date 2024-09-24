@@ -3,6 +3,7 @@
 ## 一键命令
 
     bash <(curl -Ls HY2.Hysteria.sh)
+> 提示：您需要在 root 用户下或以 sudo 权限运行
 
 ## 概述
 Hysteria 2 高级配置工具（Hysteria 2 Advanced Configuration Tool）是一个方便、快捷地用于配置和管理 Hysteria 2 的 Bash 脚本工具。该工具旨在简化 Hysteria 2 的安装、配置、启动、停止、重启、卸载等操作，并提供丰富的高级设置选项，如端口跳跃、系统缓冲区调整、查看相关配置和常用工具等。我非常高兴可以将该脚本分享给对于 Hysteria 2 有着轻松配置管理需求的用户！
@@ -57,7 +58,7 @@ Hysteria 2 高级配置工具（Hysteria 2 Advanced Configuration Tool）是一�
 
 ## **脚本运行要求**
 
-- 已安装 wget
+- 运行系统在已验证系统列表中
 - root 用户或使用 sudo 命令
 
 ## **已验证系统**
