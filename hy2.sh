@@ -1586,6 +1586,7 @@ uninstall_hysteria() {
         read -p "$(echo -e "${RESET}请输入您的选择：[Yy/Nn]${RESET}")" user_choice
         case "$user_choice" in
             Y|Yes|YES|yes)
+                break
                 ;;
             N|No|NO|no)
                 echo ""
