@@ -429,7 +429,7 @@ edit_server_config() {
                     echo ""
                     echo -e "${BLUE}正在检测域名是否已解析到本服务器 IP...${RESET}"
 
-                    server_ip=$(curl -s ifconfig.me)
+                    server_ip=$(curl -4 -s ifconfig.me)
                     
                     # 第一次使用 nslookup 进行域名解析检测
                     domain_ip=$(nslookup $domain_change 2>/dev/null | awk '/^Address: / { print $2 }')
@@ -758,7 +758,7 @@ start_hysteria_service() {
                     echo -e "${RESET}检测到配置文件中的自备域名为: $config_domain${RESET}"
                     
                     # 获取服务器的 IP
-                    server_ip=$(curl -s ifconfig.me)
+                    server_ip=$(curl -4 -s ifconfig.me)
 
                     # 优先使用 nslookup 检测域名解析 IP
                     echo ""
@@ -2191,7 +2191,7 @@ common_tools() {
                     domain_ip=$(dig +short "$domain" A)
                 fi
 
-                server_ip=$(curl -s ifconfig.me)
+                server_ip=$(curl -4 -s ifconfig.me)
 
                 if [ -z "$domain_ip" ]; then
                     echo ""
