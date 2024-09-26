@@ -89,6 +89,23 @@ while true; do
 done
 }
 
+# 中止当前流程的提示函数
+function abort_process() {
+    while true; do
+        echo ""
+        echo ""
+        read -p "$(echo -e "${ORANGE}请输入数字 0 返回上一级菜单: ")" abort_process_choice
+        if [ "$abort_process_choice" == "0" ]; then
+            tput reset
+            continue
+        else
+            echo ""
+            echo -e "${RED}输入有误！${RESET}"
+            echo ""
+        fi
+    done
+}
+
 # 打印欢迎横幅
 echo ""
 echo -e "------- Welcome to the Hysteria 2 Advanced Configuration Tool -------"
@@ -423,6 +440,7 @@ edit_server_config() {
                         echo ""
                         echo -e "${BLUE}正在尝试使用备用方案检测…${RESET}"
                         # 备用方案使用 dig 进行域名解析检测
+                        sleep 2
                         domain_ip=$(dig +short $domain_change)
                     fi
 
@@ -713,7 +731,7 @@ start_hysteria_service() {
                         echo ""
                         echo -e "${YELLOW}即将中止启动流程…${RESET}"
                         # 跳转到 # 5 提示返回子菜单
-                        return_to_sub_menu
+                        abort_process
                     else
                         echo ""
                         echo -e "${GREEN}端口 $config_port_number 可正常使用！${RESET}"
@@ -724,7 +742,7 @@ start_hysteria_service() {
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
                     # 跳转到 # 5 提示返回子菜单
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 2b. 检查是否存在域名并检测域名解析
@@ -766,7 +784,7 @@ start_hysteria_service() {
                         echo ""
                         echo -e "${YELLOW}即将中止启动流程…${RESET}"
                         # 跳转到 # 5 提示返回子菜单
-                        return_to_sub_menu
+                        abort_process
                     fi
                 else
                     echo ""
@@ -774,7 +792,7 @@ start_hysteria_service() {
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
                     # 跳转到 # 5 提示返回子菜单
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 2c. 检查 80 端口是否被占用
@@ -792,7 +810,7 @@ start_hysteria_service() {
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
                     # 跳转到 # 5 提示返回子菜单
-                    return_to_sub_menu
+                    abort_process
                 else
                     echo ""
                     echo -e "${GREEN}80 端口状态正常！${RESET}"
@@ -815,7 +833,7 @@ start_hysteria_service() {
                     echo -e "${RESET}${enable_output}${RESET}"
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 隐藏输出启动 Hysteria 2 服务并捕获错误信息
@@ -833,7 +851,7 @@ start_hysteria_service() {
                     echo -e "${RESET}${start_output}${RESET}"
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 4. 检测 Hysteria 2 的运行状态
@@ -908,7 +926,7 @@ start_hysteria_service() {
                         echo ""
                         echo -e "${YELLOW}即将中止启动流程…${RESET}"
                         # 跳转到 # 5 提示返回子菜单
-                        return_to_sub_menu
+                        abort_process
                     else
                         echo ""
                         echo -e "${GREEN}端口 $config_port_number 可正常使用！${RESET}"
@@ -919,7 +937,7 @@ start_hysteria_service() {
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
                     # 跳转到 # 5 提示返回子菜单
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 2b. 检查自有证书配置
@@ -963,7 +981,7 @@ start_hysteria_service() {
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
                     # 跳转到 # 5 提示返回子菜单
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 3. 启动 Hysteria 2 服务
@@ -986,7 +1004,7 @@ start_hysteria_service() {
                     echo -e "${RESET}${enable_output}${RESET}"
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 隐藏输出启动 Hysteria 2 服务并捕获错误信息
@@ -1003,7 +1021,7 @@ start_hysteria_service() {
                     echo -e "${RESET}${start_output}${RESET}"
                     echo ""
                     echo -e "${YELLOW}即将中止启动流程…${RESET}"
-                    return_to_sub_menu
+                    abort_process
                 fi
 
                 # 4. 检测 Hysteria 2 的运行状态
@@ -1239,6 +1257,7 @@ set_port_hop() {
                     echo -e "${GREEN}已成功通过 netfilter-persistent 保存端口跳跃配置！${RESET}"
                 elif $has_iptables && $has_nftables; then
                     # 如果系统同时安装了 iptables 和 nftables，则安装 netfilter-persistent 来保存 iptables 配置
+                    echo ""
                     echo -e "${BLUE}根据当前系统的防火墙配置，正在安装 netfilter-persistent 并保存配置…${RESET}"
                     apt-get update > /dev/null 2>&1
                     apt-get install -y netfilter-persistent > /dev/null 2>&1
