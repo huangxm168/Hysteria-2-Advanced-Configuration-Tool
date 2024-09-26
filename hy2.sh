@@ -1580,27 +1580,27 @@ uninstall_hysteria() {
         # 1. 清屏
         clear
 
-        # 2. 让用户确认是否继续卸载
-        echo -e "${YELLOW}您即将进入卸载 Hysteria 2 的操作引导页面。正式卸载后，相关操作不可逆转。是否要开始？${RESET}"
-        echo ""
-        read -p "$(echo -e "${RESET}请输入您的选择：[Yy/Nn]${RESET}")" user_choice
-        case "$user_choice" in
-            Y|Yes|YES|yes)
-                break
-                ;;
-            N|No|NO|no)
-                echo ""
-                echo -e "${GREEN}您已放弃进入卸载操作引导页面。即将返回主菜单…${RESET}"
-                sleep 2
-                return
-                ;;
-            *)
-                echo ""
-                echo -e "${RED}您的输入有误！${RESET}"
-                echo ""
-                continue
-                ;;
-        esac
+        # # 2. 让用户确认是否继续卸载
+        # echo -e "${YELLOW}您即将进入卸载 Hysteria 2 的操作引导页面。正式卸载后，相关操作不可逆转。是否要开始？${RESET}"
+        # echo ""
+        # read -p "$(echo -e "${RESET}请输入您的选择：[Yy/Nn]${RESET}")" user_choice
+        # case "$user_choice" in
+        #     Y|Yes|YES|yes)
+        #         break
+        #         ;;
+        #     N|No|NO|no)
+        #         echo ""
+        #         echo -e "${GREEN}您已放弃进入卸载操作引导页面。即将返回主菜单…${RESET}"
+        #         sleep 2
+        #         return
+        #         ;;
+        #     *)
+        #         echo ""
+        #         echo -e "${RED}您的输入有误！${RESET}"
+        #         echo ""
+        #         continue
+        #         ;;
+        # esac
 
         # 3. 显示卸载选项菜单
         echo ""
