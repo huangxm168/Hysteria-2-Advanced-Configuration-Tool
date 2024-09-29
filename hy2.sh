@@ -429,6 +429,7 @@ edit_server_config() {
                     echo ""
                     echo -e "${BLUE}正在检测域名是否已解析到本服务器 IP...${RESET}"
 
+                    # 检测当前服务器 IP 地址
                     server_ip=$(curl -4 -s ifconfig.me)
                     
                     # 第一次使用 nslookup 进行域名解析检测
@@ -519,6 +520,7 @@ edit_server_config() {
                 echo ""
                 echo -e "${ORANGE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
+                echo -e "${CYAN}本机 IP 地址：${RESET}$server_ip"
                 echo -e "${CYAN}端口号：${RESET}$config_port_number"
                 echo -e "${CYAN}域名：${RESET}$config_domain"
                 echo -e "${CYAN}密码：${RESET}$config_passwd"
@@ -654,14 +656,18 @@ edit_server_config() {
                 echo ""
                 echo -e "${GREEN}已成功配置服务端配置文件！${RESET}"
 
+                # 检测当前服务器 IP 地址
+                server_ip=$(curl -4 -s ifconfig.me)    
+
                 # 6. 提取并打印配置文件中的关键参数
                 config_port_number=$(grep '^listen:' /etc/hysteria/config.yaml | grep -Eo ':[0-9]+' | sed 's/^://')
                 config_passwd=$(grep '^  password:' /etc/hysteria/config.yaml | sed -E 's/^[[:space:]]*password:[[:space:]]*//;s/[[:space:]]+#.*//')
-                
+
                 echo ""
                 echo ""
                 echo -e "${ORANGE}已为您打印服务端配置文件的关键参数如下：${RESET}"
                 echo ""
+                echo -e "${CYAN}本机 IP 地址：${RESET}$server_ip"
                 echo -e "${CYAN}端口号：${RESET}$config_port_number"
                 echo -e "${CYAN}密码：${RESET}$config_passwd"
                 echo ""
@@ -2162,11 +2168,12 @@ common_tools() {
         echo -e "${ORANGE}请选择您要使用的工具："
         echo ""
         echo ""
-        echo -e "${GREEN}  1. 域名解析检测"
-        echo -e "${GREEN}  2. 端口占用检测"
-        echo -e "${GREEN}  3. 查看防火墙配置内容"
+        echo -e "${GREEN}   1. 域名解析检测"
+        echo -e "${GREEN}   2. 端口占用检测"
+        echo -e "${GREEN}   3. 查看防火墙配置内容"
+        echo -e "${GREEN}   4. 查询当前服务器 IP 地址${RESET}"
         echo ""
-        echo -e "${YELLOW}  0. 返回主菜单"
+        echo -e "${YELLOW}   0. 返回主菜单"
         echo ""
         echo ""
         read -p "$(echo -e "${RESET}请输入您的选择 [0-3]：${RESET}")" tool_choice
@@ -2356,6 +2363,38 @@ common_tools() {
                 fi
 
                 # 2. 返回子菜单
+                return_to_sub_menu
+                ;;
+            4)
+                # 1. 清屏
+                clear
+
+                # 2. 查询当前服务器 IP 地址
+                echo -e "${BLUE}正在查询当前服务器 IP 地址…${RESET}"
+
+                # 查询 IPv4 地址
+                server_ipv4=$(curl -4 -s ifconfig.me)
+
+                # 查询 IPv6 地址
+                server_ipv6=$(curl -6 -s ifconfig.me)
+
+                # 3. 输出 IPv4 地址
+                echo ""
+                echo ""
+                if [[ -n "$server_ipv4" ]]; then
+                    echo -e "${CYAN}IPv4 地址：${RESET}${server_ipv4}"
+                else
+                    echo -e "${CYAN}IPv4 地址：${RESET}N/A"
+                fi
+
+                # 4. 输出 IPv6 地址
+                if [[ -n "$server_ipv6" ]]; then
+                    echo -e "${CYAN}IPv6 地址：${RESET}${server_ipv6}"
+                else
+                    echo -e "${CYAN}IPv6 地址：${RESET}N/A"
+                fi
+                
+                # 3. 返回子菜单
                 return_to_sub_menu
                 ;;
             0)
